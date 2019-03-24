@@ -8,6 +8,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.List;
  * Holds data pertaining to a list item for a {@link NewsAdapter}
  * This is a Generic class that is meant to be extended by a child class.
  *
- * Some methods (such as {@link #getContainerList}) have a default action.
+ * Some methods (such as {@link #}) have a default action.
  * They can be overridden by children to modify behavior.
  *
  * Use: https://stackoverflow.com/questions/18204190/java-abstract-classes-returning-this-pointer-for-derived-classes/39897781#39897781
@@ -25,8 +27,13 @@ import java.util.List;
 public class NewsContainer extends BaseObservable {
     String LOG_TAG = NewsContainer.class.getSimpleName();
 
-    public String author = null;
+    //See: https://developer.android.com/reference/java/text/DateFormat.html
+    private static final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+    private static final DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
+
     public String title = null;
+    public String author = null;
+    public String section = null;
     public String subText = null;
     public Date date = null;
     private long dateRaw = -1;
@@ -41,6 +48,7 @@ public class NewsContainer extends BaseObservable {
                 ", date=" + date +
                 ", dateRaw=" + dateRaw +
                 ", urlPage='" + urlPage + '\'' +
+                ", section='" + section + '\'' +
                 '}';
     }
 
@@ -66,15 +74,22 @@ public class NewsContainer extends BaseObservable {
     }
 
     @Bindable
-    public Date getDate() {
-        return date;
+    public String getSection() {
+        return section;
+    }
+
+    @Bindable
+    public String getDate() {
+        return dateFormat.format(date);
+    }
+
+    @Bindable
+    public String getTime() {
+        return timeFormat.format(date);
     }
 
     Uri getPage() {
-        if (urlPage.isEmpty()) {
-            return null;
-        }
-        return Uri.parse(urlPage);
+        return QueryUtilities.createUri(urlPage);
     }
 
     //Setters
@@ -82,6 +97,11 @@ public class NewsContainer extends BaseObservable {
         this.author = author;
         notifyPropertyChanged(BR.author);
         return this;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
+        notifyPropertyChanged(BR.section);
     }
 
     NewsContainer setTitle(String title) {
@@ -96,14 +116,11 @@ public class NewsContainer extends BaseObservable {
         return this;
     }
 
-    NewsContainer setDate(Date date) {
-        this.date = date;
-        notifyPropertyChanged(BR.date);
-        return this;
-    }
-
-    NewsContainer setDateRaw(long dateRaw) {
+    NewsContainer setDate(long dateRaw) {
         this.dateRaw = dateRaw;
+        this.date = new Date(dateRaw);
+        notifyPropertyChanged(BR.date);
+        notifyPropertyChanged(BR.time);
         return this;
     }
 
@@ -111,87 +128,4 @@ public class NewsContainer extends BaseObservable {
         this.urlPage = urlPage;
         return this;
     }
-
-//    /**
-//     * Returns a list of sub-items for this container.
-//     * If there are no sub items, then just return a list of length 1 that contains {@code this}.
-//     * Can be overridden to parse the {@link JSONObject}s differently.
-//     * @see #populateContainerInfo
-//     */
-//    List<NewsContainer> getContainerList(JSONObject root, JSONObject number) throws JSONException, IOException {
-//        List<NewsContainer> data = new ArrayList<>();
-//        if (!populateContainerInfo(root, number)) {
-//            return null;
-//        }
-//        data.add(this);
-//        return data;
-//    }
-//
-//    /**
-//     * Populates this container with data from the provided {@link JSONObject}s.
-//     * Can be overridden to parse the {@link JSONObject}s differently.
-//     * @see #parseListData
-//     * @see #parseDetailData
-//     */
-//    boolean populateContainerInfo(JSONObject root, JSONObject number) throws JSONException, IOException {
-//        if (!parseListData(root, number)) {
-//            return false;
-//        }
-//
-//        String jsonResponseDetails = getJsonUrlDetails();
-//        if (jsonResponseDetails == null) {
-//            return false;
-//        }
-//
-//        return parseDetailData(QueryUtilities.makeHttpRequest(jsonResponseDetails));
-//    }
-//
-//    /**
-//     * What URL to get detailed information about this container from.
-//     * Can be overridden to parse the {@link JSONObject}s differently.
-//     * @see #parseDetailData
-//     */
-//    String getJsonUrlDetails() {
-//        if (indexPage == -1) {
-//            return null;
-//        }
-//        return "https://xenoblade.fandom.com/api/v1/Articles/Details?ids=" + indexPage;
-//    }
-//
-//    /**
-//     * Gets basic information from a list-style {@link JSONObject}.
-//     * Can be overridden to parse the {@link JSONObject}s differently.
-//     */
-//    boolean parseListData(JSONObject root, JSONObject number) throws JSONException {
-//        //Remove category pages
-//        String url = number.getString("url");
-//        if (url.contains("Category:")) {
-//            return false;
-//        }
-//
-//        //Remove image pages
-//        String title = number.getString("title");
-//        if (title.contains(".")) {
-//            return false;
-//        }
-//
-//        setIndexPage(number.getInt("id"));
-//        setTitle(title);
-//        setPage(root.getString("basepath") + url);
-//        return (indexPage != -1) && (!urlPage.isEmpty());
-//    }
-//
-//    /**
-//     * Gets detailed information from a single-style {@link JSONObject}.
-//     * Can be overridden to parse the {@link JSONObject}s differently.
-//     * @see #getJsonUrlDetails
-//     */
-//    boolean parseDetailData(String jsonResponse) throws JSONException {
-//        JSONObject items = new JSONObject(jsonResponse)
-//                .getJSONObject("items");
-//        JSONObject number = items.getJSONObject(items.keys().next());
-//        setSubText(number.getString("abstract"));
-//        setImage(number.getString("thumbnail"));
-//        return true;
-//    }
 }

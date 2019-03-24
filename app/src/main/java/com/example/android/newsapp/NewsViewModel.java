@@ -45,6 +45,10 @@ class NewsViewModel extends AndroidViewModel {
         return progress;
     }
 
+//    private String queryGuardian() {
+//        return "https://content.guardianapis.com/search?order-by=newest&show-elements=image&show-tags=contributor&q=football&api-key=test";
+//    }
+
     /**
      * The {@link android.content.Loader} is deprecated;
      * it is suggested that a combination {@link AndroidViewModel} and {@link LiveData} be used instead.
@@ -55,26 +59,22 @@ class NewsViewModel extends AndroidViewModel {
      * See: https://medium.com/androiddevelopers/lifecycle-aware-data-loading-with-android-architecture-components-f95484159de4#fb19
      */
     @SuppressLint("StaticFieldLeak")
-    void loadContainerList(final int position) {
-        if (position == -1) throw new AssertionError();
+    void loadContainerList() {
         new AsyncTask<Void, Integer, List<NewsContainer>>() {
             /**
              * Gets a list of {@link NewsContainer} objects from the internet
              */
             @Override
             protected List<NewsContainer> doInBackground(Void... voids) {
-                return null;
+                Log.e(LOG_TAG, "@doInBackground");
+                List<NewsContainer> data = new ArrayList<>();
 
-                //Containers are stored in a dictionary in order to avoid duplicates
-//                Map<String, NewsContainer> dataMap = new HashMap<>();
-//
 //                try {
 //                    //Get the initial JSON list of containers
-//                    ContainerUtilities.Group orderGroup = ContainerUtilities.orderList.get(position);
 //                    String jsonResponseList = QueryUtilities.makeHttpRequest(orderGroup.urlJsonList);
 //                    if (jsonResponseList == null) {
 //                        Log.e(LOG_TAG, "Get JSON error");
-//                        return null;
+//                        return new ArrayList<>();
 //                    }
 //
 //                    //Generate a list of {@link BaseContainer} objects
@@ -115,7 +115,7 @@ class NewsViewModel extends AndroidViewModel {
 //                        return item1.title.compareToIgnoreCase(item2.title);
 //                    }
 //                });
-//                return data;
+                return data;
             }
 
             /**

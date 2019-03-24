@@ -1,5 +1,6 @@
 package com.example.android.newsapp;
 
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -12,13 +13,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-//https://xenoblade.fandom.com/api/v1/Articles/List?category=Blades&limit=1000
-//https://xenoblade.fandom.com/api/v1/Articles/List?category=XC2_Locations&limit=1000
-//https://xenoblade.fandom.com/api/v1/Articles/List?category=XC2_Items&limit=1000
-
 /**
  * A utility class that is used to get information from the internet.
- * See: http://www.wikia.com/api/v1#!/Articles/getList_get_2
  * Use: https://gist.github.com/udacityandroid/10892631f57f9f073ab9e1d11cfaafcf
  */
 class QueryUtilities {
@@ -37,6 +33,16 @@ class QueryUtilities {
             Log.e(LOG_TAG, "Error with creating URL ", error);
             return null;
         }
+    }
+
+    /**
+     * Formats a string as a URI object.
+     */
+    static Uri createUri(String stringUri) {
+        if (stringUri.isEmpty()) {
+            return null;
+        }
+        return Uri.parse(stringUri);
     }
 
     /**

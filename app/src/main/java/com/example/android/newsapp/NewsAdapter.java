@@ -46,6 +46,10 @@ class NewsAdapter extends ArrayAdapter<NewsContainer> {
         if (container != null) {
             binding.title.setText(container.getTitle());
             binding.subText.setText(container.getSubText());
+            binding.author.setText(container.getAuthor());
+            binding.author.setText(container.getSection());
+            binding.time.setText(container.getTime());
+            binding.date.setText(container.getDate());
         }
         return binding.getRoot();
     }
