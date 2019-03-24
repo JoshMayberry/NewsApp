@@ -7,4 +7,25 @@
     <string name="error_internet">No Internet Connection</string>
     <string name="error_article">No Articles Found</string>
     <string name="error_author">Anonymous</string>
+
+    <!-- Strings related to Settings -->
+    <!-- See: https://open-platform.theguardian.com/documentation/search -->
+    <string name="settings_menu_item">Settings</string>
+    <string name="settings_title">News Settings</string>
+
+    <string name="settings_show_images_label">Show Images</string>
+    <string name="settings_show_images_key" translatable="false">show_images</string>
+    <string name="settings_show_images_default" translatable="false">@string/settings_order_by_newest_value</string>
+
+    <string name="settings_order_by_label">Order By</string>
+    <string name="settings_order_by_key" translatable="false">order_by</string>
+    <string name="settings_order_by_default" translatable="false">@string/settings_order_by_newest_value</string>
+
+    <string name="settings_order_by_newest_label">Newest</string>
+    <string name="settings_order_by_oldest_label">Oldest</string>
+    <string name="settings_order_by_relevance_label">Relevance</string>
+
+    <string name="settings_order_by_newest_value" translatable="false">newest</string>
+    <string name="settings_order_by_oldest_value" translatable="false">oldest</string>
+    <string name="settings_order_by_relevance_value" translatable="false">relevance</string>
 </resources>

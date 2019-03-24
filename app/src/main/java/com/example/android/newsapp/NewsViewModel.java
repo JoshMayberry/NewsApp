@@ -5,7 +5,10 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -31,9 +34,13 @@ class NewsViewModel extends AndroidViewModel {
 
     private final MutableLiveData<List<NewsContainer>> containerList = new MutableLiveData<>();
     private final MutableLiveData<Integer> progress = new MutableLiveData<>();
+    SharedPreferences sharedPrefs;
+    Context context;
 
     NewsViewModel(@NonNull Application application) {
         super(application);
+        context = application;
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(application);
     }
 
     LiveData<List<NewsContainer>> getContainerList() {
@@ -45,9 +52,13 @@ class NewsViewModel extends AndroidViewModel {
         return progress;
     }
 
-//    private String queryGuardian() {
-//        return "https://content.guardianapis.com/search?order-by=newest&show-elements=image&show-tags=contributor&q=football&api-key=test";
-//    }
+    private String queryGuardian() {
+        StringBuilder query = new StringBuilder();
+        query.append("https://content.guardianapis.com/search?order-by=");
+        query.append(sharedPrefs.getString(context.getString(R.string.settings_order_by_key), context.getString(R.string.settings_order_by_default)));
+
+        return "https://content.guardianapis.com/search?order-by=newest&show-elements=image&show-tags=contributor&q=football&api-key=test";
+    }
 
     /**
      * The {@link android.content.Loader} is deprecated;
