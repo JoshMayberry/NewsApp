@@ -5,6 +5,6 @@
     <color name="colorPrimaryDark">#008BA3</color>
     <color name="colorPrimaryLight">#62efff</color>
     <color name="colorSecondary">#ff9800</color>
-    <color name="colorSecondaryDark">#ffc947</color>
-    <color name="colorSecondaryLight">#c66900</color>
+    <color name="colorSecondaryDark">#c66900</color>
+    <color name="colorSecondaryLight">#ffc947</color>
 </resources>

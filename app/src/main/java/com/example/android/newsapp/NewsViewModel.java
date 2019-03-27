@@ -2,14 +2,18 @@ package com.example.android.newsapp;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+
 import androidx.annotation.NonNull;
+
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -23,23 +27,31 @@ import java.util.List;
 class NewsViewModel extends AndroidViewModel {
     private String LOG_TAG = NewsViewModel.class.getSimpleName();
 
-    private final MutableLiveData<List<NewsContainer>> containerList = new MutableLiveData<>();
-    private final MutableLiveData<Integer> progress = new MutableLiveData<>();
+    private MutableLiveData<List<NewsContainer>> containerList = null;
+    private MutableLiveData<Integer> progress = null;
     SharedPreferences sharedPrefs;
     Context context;
 
     NewsViewModel(@NonNull Application application) {
         super(application);
         context = application;
+        //See: https://developer.android.com/guide/topics/ui/settings/use-saved-values#reading_preference_values
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(application);
     }
 
+    //See: https://www.journaldev.com/22561/android-mvvm-livedata-data-binding#viewmodel
     LiveData<List<NewsContainer>> getContainerList() {
+        if (containerList == null) {
+            containerList = new MutableLiveData<>();
+        }
         return containerList;
     }
 
     //See: https://stackoverflow.com/questions/48239657/how-to-handle-android-livedataviewmodel-with-progressbar-on-screen-rotate/53238717#53238717
     LiveData<Integer> getProgress() {
+        if (progress == null) {
+            progress = new MutableLiveData<>();
+        }
         return progress;
     }
 
@@ -47,6 +59,10 @@ class NewsViewModel extends AndroidViewModel {
         StringBuilder query = new StringBuilder();
         query.append("https://content.guardianapis.com/search?order-by=");
         query.append(sharedPrefs.getString(context.getString(R.string.settings_order_by_key), context.getString(R.string.settings_order_by_default)));
+        if (sharedPrefs.getBoolean(context.getString(R.string.settings_show_images_key), false)) {
+            query.append("&show-elements=image");
+        }
+        query.append("&show-tags=contributor");
 
         return "https://content.guardianapis.com/search?order-by=newest&show-elements=image&show-tags=contributor&q=football&api-key=test";
     }
@@ -55,7 +71,7 @@ class NewsViewModel extends AndroidViewModel {
      * The {@link android.content.Loader} is deprecated;
      * it is suggested that a combination {@link AndroidViewModel} and {@link LiveData} be used instead.
      * See: https://medium.com/androiddevelopers/lifecycle-aware-data-loading-with-android-architecture-components-f95484159de4#788a
-     *
+     * <p>
      * An {@link AsyncTask} is used to run a background thread.
      * Apparently, when used with an {@link AndroidViewModel} and {@link LiveData}, there is no memory leak problem.
      * See: https://medium.com/androiddevelopers/lifecycle-aware-data-loading-with-android-architecture-components-f95484159de4#fb19

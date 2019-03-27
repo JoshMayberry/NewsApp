@@ -1,44 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <data />
 
-    <RelativeLayout
+    <data>
+        <!-- See: https://stackoverflow.com/questions/38407664/syntax-for-conditional-statements-in-android-xml-layout/38407767#38407767 -->
+        <import type="android.view.View" />
+
+        <variable
+            name="newsViewModel"
+            type="com.example.android.newsapp.New_NewsViewModel" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <ListView
-            android:id="@+id/list"
+        <SearchView
+            android:id="@+id/search"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorPrimaryLight"
-            android:divider="@color/colorPrimaryDark"
-            android:dividerHeight="1dp"
-            android:orientation="vertical" />
-
-        <TextView
-            android:id="@+id/empty_view"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            tools:text="No Articles Found"
-            android:textAppearance="?android:textAppearanceMedium" />
+            android:text="@={newsViewModel.searchValue}"
+            android:background="@color/colorSecondaryLight"
+            app:iconifiedByDefault="false"
+            app:queryHint="test" />
 
-        <TextView
-            android:id="@+id/counter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            tools:text="50"
-            android:textAppearance="?android:textAppearanceMedium" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <ProgressBar
-            android:id="@+id/loading_indicator"
-            style="@style/Widget.AppCompat.ProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
+            <ListView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimaryLight"
+                android:divider="@color/colorPrimaryDark"
+                android:dividerHeight="1dp"
+                android:orientation="vertical" />
 
-    </RelativeLayout>
+            <!-- See: https://stackoverflow.com/questions/38407664/syntax-for-conditional-statements-in-android-xml-layout/38407767#38407767 -->
+            <TextView
+                android:id="@+id/empty_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@{newsViewModel.error}"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:visibility="@{newsViewModel.error != null ? View.VISIBLE : View.GONE}"
+                tools:text="No Articles Found" />
+
+            <TextView
+                android:id="@+id/counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:visibility="@{newsViewModel.busy}"
+                tools:text="@{newsViewModel.progress}" />
+
+            <ProgressBar
+                android:id="@+id/loading_indicator"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="@{newsViewModel.busy}" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
 </layout>
 

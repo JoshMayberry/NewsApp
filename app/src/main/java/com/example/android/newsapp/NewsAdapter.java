@@ -43,12 +43,12 @@ class NewsAdapter extends ArrayAdapter<NewsContainer> {
         //I think it does not work because the containers are populated before the views are created. This means that the setter methods are called before they can notify the binding that a change has taken place?
         NewsContainer container = getItem(position);
         if (container != null) {
-            binding.title.setText(container.getTitle());
-            binding.subText.setText(container.getSubText());
-            binding.author.setText(container.getAuthor());
-            binding.author.setText(container.getSection());
             binding.time.setText(container.getTime());
             binding.date.setText(container.getDate());
+            binding.title.setText(container.getTitle());
+            binding.author.setText(container.getAuthor());
+            binding.subText.setText(container.getSubText());
+            binding.sectionName.setText(container.getSection());
         }
         return binding.getRoot();
     }

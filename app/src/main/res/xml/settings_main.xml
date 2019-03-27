@@ -1,26 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Use: https://developer.android.com/guide/topics/ui/settings.html#create_a_hierarchy -->
 <!-- See: https://developer.android.com/guide/topics/ui/settings/organize-your-settings#preference_categories -->
+
+<!--<PreferenceScreen-->
+    <!--xmlns:app="http://schemas.android.com/apk/res/android">-->
 <androidx.preference.PreferenceScreen
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <PreferenceCategory
-        app:key="notifications_category"
-        app:title="Notifications">
-
         <SwitchPreferenceCompat
-            app:key="notifications"
-            app:title="Enable message notifications"/>
+            app:key="showImages"
+            app:title="Show Images"/>
 
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        app:key="help_category"
-        app:title="Help">
-
-        <Preference
-            app:key="feedback"
-            app:summary="Report technical issues or suggest new features"
-            app:title="Send feedback"/>
-
-    </PreferenceCategory>
+    <!-- See: https://developer.android.com/reference/androidx/preference/ListPreference -->
+    <!-- Use: https://stackoverflow.com/questions/9880841/using-list-preference-in-android/9881253#9881253 -->
+    <!-- Use: https://stackoverflow.com/questions/5197228/how-to-set-the-default-value-of-a-listpreference/17509197#17509197 -->
+    <ListPreference
+        app:key="orderBy"
+        app:title="Order By"
+        app:defaultValue="@strings/settings_order_by_default"
+        app:entries="@array/settings_order_by_labels"
+        app:entryValues="@array/settings_order_by_values"/>
 </androidx.preference.PreferenceScreen>
