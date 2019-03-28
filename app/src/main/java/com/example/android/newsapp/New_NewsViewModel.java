@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 
 import androidx.databinding.BaseObservable;
-import androidx.databinding.Bindable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -21,6 +20,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,11 +63,12 @@ public class New_NewsViewModel extends AndroidViewModel {
 
     /**
      * Displays any errors to the user.
+     * Will be invisible if set to {@link null}.
      */
-    private MutableLiveData<String> error = new MutableLiveData<>();
+    private MutableLiveData<String> message = new MutableLiveData<>();
 
     /**
-     * What the user wants to search for
+     * What the user wants to search for.
      * See: https://proandroiddev.com/advanced-data-binding-binding-to-livedata-one-and-two-way-binding-dae1cd68530f#7381
      */
     private MutableLiveData<String> searchValue = new MutableLiveData<>();
@@ -81,7 +86,7 @@ public class New_NewsViewModel extends AndroidViewModel {
         return containerList;
     }
 
-    //Public getter methods of MutableLiveData are visible to databinding
+    //Public getter methods of MutableLiveData are visible to data binding
     //See: https://proandroiddev.com/advanced-data-binding-binding-to-livedata-one-and-two-way-binding-dae1cd68530f#49f8
     //See: https://www.journaldev.com/22561/android-mvvm-livedata-data-binding#refactoring-observablefield-to-livedata
     public MutableLiveData<Integer> getBusy() {
@@ -92,8 +97,8 @@ public class New_NewsViewModel extends AndroidViewModel {
         return progress;
     }
 
-    public MutableLiveData<String> getError() {
-        return error;
+    public MutableLiveData<String> getMessage() {
+        return message;
     }
 
     public MutableLiveData<String> getSearchValue() {
@@ -115,13 +120,13 @@ public class New_NewsViewModel extends AndroidViewModel {
         return this;
     }
 
-    New_NewsViewModel setError(int resourceId) {
-        this.error.setValue(context.getString(resourceId));
+    New_NewsViewModel setMessage(int resourceId) {
+        this.message.setValue(context.getString(resourceId));
         return this;
     }
 
-    New_NewsViewModel setError(String text) {
-        this.error.setValue(text);
+    New_NewsViewModel setMessage(String text) {
+        this.message.setValue(text);
         return this;
     }
 
@@ -135,7 +140,7 @@ public class New_NewsViewModel extends AndroidViewModel {
         return this;
     }
 
-    boolean loadContainerList() {
+    boolean loadData() {
         if ((myAsyncTask != null) && (myAsyncTask.getStatus() != AsyncTask.Status.FINISHED)) {
             return false;
         }
@@ -144,10 +149,63 @@ public class New_NewsViewModel extends AndroidViewModel {
         return true;
     }
 
+    boolean resetData() {
+        if ((myAsyncTask == null) || (myAsyncTask.getStatus() == AsyncTask.Status.FINISHED)) {
+            return false;
+        }
 
-    //See: https://dzone.com/articles/a-guide-to-formatting-code-snippets-in-javadoc
+        myAsyncTask.cancel(true);
+        return true;
+    }
+
+    boolean restartData() {
+        if (myAsyncTask == null) {
+            myAsyncTask = new MyAsyncClass();
+        } else if (myAsyncTask.getStatus() == AsyncTask.Status.FINISHED) {
+            myAsyncTask.cancel(true);
+        }
+        myAsyncTask.execute();
+        return true;
+    }
 
     /**
+     * Generates a query for the guardian api.
+     * Here are some example queries that can be returned:
+     * - http://content.guardianapis.com/search?api-key=test&order-by=relevance&show-tags=contributor
+     * - http://content.guardianapis.com/search?api-key=test&order-by=relevance&show-tags=contributor&show-elements=image&q=debates
+     */
+    private String getQuery() {
+        //Start url
+        StringBuilder query = new StringBuilder();
+        query.append("https://content.guardianapis.com/search");
+
+        //API Key
+        query.append("?api-key=test");
+
+        //Order By
+        query.append("&order-by=");
+        query.append(sharedPrefs.getString(context.getString(R.string.settings_order_by_key), context.getString(R.string.settings_order_by_default)));
+
+        //Show Author
+        query.append("&show-tags=contributor");
+
+        //Show Images
+        if (sharedPrefs.getBoolean(context.getString(R.string.settings_show_images_key), false)) {
+            query.append("&show-elements=image");
+        }
+
+        //Search Query
+        String messageValue = message.getValue();
+        if ((messageValue != null) && (!messageValue.isEmpty())) {
+            query.append("&q=");
+            query.append(messageValue);
+        }
+
+        return query.toString();
+    }
+
+    /**
+     * <p> See: https://dzone.com/articles/a-guide-to-formatting-code-snippets-in-javadoc </p>
      * <h1>Why an AsyncTask is Used instead of a Loader</h1>
      * <p>
      * The {@link android.content.Loader} is deprecated;
@@ -159,16 +217,16 @@ public class New_NewsViewModel extends AndroidViewModel {
      * See: https://medium.com/androiddevelopers/lifecycle-aware-data-loading-with-android-architecture-components-f95484159de4#fb19
      * See: https://proandroiddev.com/advanced-data-binding-binding-to-livedata-one-and-two-way-binding-dae1cd68530f#2dfd
      * </p><p>
-     *     Alternatively, a {@link Handler} can be used instead like so:
-     *     <pre>
-     *         //See: https://www.journaldev.com/22561/android-mvvm-livedata-data-binding#refactoring-observablefield-to-livedata
-     *         new Handler().post(new Runnable() {
-     *             @Override
-     *             public void run() {
-     *                 Toast.makeText(context, "Hello World", Toast.LENGTH_SHORT).show();
-     *             }
-     *         });
-     *     </pre>
+     * Alternatively, a {@link Handler} can be used instead like so:
+     * <pre>
+     *     //See: https://www.journaldev.com/22561/android-mvvm-livedata-data-binding#refactoring-observablefield-to-livedata
+     *     new Handler().post(new Runnable() {
+     *         @Override
+     *         public void run() {
+     *             Toast.makeText(context, "Hello World", Toast.LENGTH_SHORT).show();
+     *         }
+     *     });
+     * </pre>
      * </p><p>
      * An AsyncTask fits better with what the background thread is meant to do, so that is what will be used.
      * See: https://tutorial.eyehunts.com/android/deference-between-handler-asynctask-thread-android/
@@ -182,8 +240,61 @@ public class New_NewsViewModel extends AndroidViewModel {
          */
         @Override
         protected List<NewsContainer> doInBackground(Void... voids) {
-            Log.e(LOG_TAG, "@doInBackground");
             List<NewsContainer> data = new ArrayList<>();
+
+            try {
+                //Get the initial JSON list of containers
+                String jsonResponseList = QueryUtilities.makeHttpRequest(getQuery());
+                if (jsonResponseList == null) {
+                    showError("Get JSON error");
+                    return new ArrayList<>();
+                }
+
+                //Generate a list of {@link NewsContainer} objects
+                JSONObject root = new JSONObject(jsonResponseList);
+                JSONObject response = root.optJSONObject("response");
+                if (hasError(root, response)) {
+                    return new ArrayList<>();
+                }
+
+                JSONArray results = root.optJSONArray("results");
+                if (results == null) {
+                    showError("Unknown Error: No results");
+                    return new ArrayList<>();
+                }
+                for (int i = 0; i < results.length(); i++) {
+                    NewsContainer container = new NewsContainer(context);
+                    JSONObject resultItem = results.optJSONObject(i);
+                    if (resultItem == null) {
+                        showError("Unknown Error: No result item");
+                        return new ArrayList<>();
+                    }
+                    container.setSection(resultItem.optString("sectionName"));
+                    container.setDate(resultItem.optString("webPublicationDate"));
+                    container.setTitle(resultItem.optString("webTitle"));
+                    container.setUrlPage(resultItem.optString("webUrl"));
+
+                    JSONArray tags = resultItem.optJSONArray("tags");
+                    container.setAuthor(null);
+                    if ((tags != null) && (tags.length() > 0)) {
+                        for (int j = 0; j < tags.length(); j++) {
+                            JSONObject tagItem = tags.optJSONObject(j);
+                            if (tagItem == null) {
+                                showError("Unknown Error: No tag item");
+                                return new ArrayList<>();
+                            }
+                            container.setAuthor(tagItem.getString("webTitle"));
+                            break;
+                        }
+                    }
+
+
+                }
+
+            } catch (IOException | JSONException error) {
+                showError("Unknown Error", error);
+                return new ArrayList<>();
+            }
 
             return data;
         }
@@ -200,11 +311,67 @@ public class New_NewsViewModel extends AndroidViewModel {
         }
 
         /**
-         * Applies the downloaded list of {@link NewsContainer} objects to the UI
+         * Starts the {@link #busy} signal.
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            setBusy(View.VISIBLE);
+            setMessage(null);
+        }
+
+        /**
+         * Applies the downloaded list of {@link NewsContainer} objects to the UI and removes the {@link #busy} signal.
          */
         @Override
         protected void onPostExecute(List<NewsContainer> data) {
             containerList.setValue(data);
+            setBusy(View.GONE);
+
+            if (data.size() < 1) {
+                setMessage(R.string.error_article);
+            } else {
+                setMessage(null);
+            }
         }
+
+        /**
+         * Resets the list contents and removes the {@link #busy} signal.
+         */
+        @Override
+        protected void onCancelled(List<NewsContainer> newsContainers) {
+            super.onCancelled(newsContainers);
+            setBusy(View.GONE);
+            setMessage(R.string.error_cancel);
+        }
+
+        private boolean hasError(JSONObject root, JSONObject response) throws JSONException {
+            if (response != null) {
+                String status = response.optString("status");
+                if (status == null) {
+                    showError("Unknown Error: No Status");
+                    return true;
+                }
+                if (!status.equals("ok")) {
+                    showError("Status Error: " + status);
+                    return true;
+                }
+            } else if (root.has("message")) {
+                String message = root.getString("message");
+                showError("API Error: " + message);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    private void showError(String errorMessage) {
+        Log.e(LOG_TAG, errorMessage);
+        Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
+    }
+
+    private void showError(String errorMessage, Exception error) {
+        Log.e(LOG_TAG, errorMessage, error);
+        Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
     }
 }

@@ -1,35 +1,37 @@
 package com.example.android.newsapp;
 
-import androidx.databinding.BaseObservable;
-import androidx.databinding.Bindable;
+import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
 
-//Must be public to use databinding
 /**
  * Holds data pertaining to a list item for a {@link NewsAdapter}
  * This is a Generic class that is meant to be extended by a child class.
- *
+ * <p>
  * Some methods (such as {@link #}) have a default action.
  * They can be overridden by children to modify behavior.
- *
+ * <p>
  * Use: https://stackoverflow.com/questions/18204190/java-abstract-classes-returning-this-pointer-for-derived-classes/39897781#39897781
  */
-public class NewsContainer extends BaseObservable {
+class NewsContainer {
     String LOG_TAG = NewsContainer.class.getSimpleName();
+    Context context = null;
 
     //See: https://developer.android.com/reference/java/text/DateFormat.html
     private static final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
     private static final DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
 
-    public String title = null;
-    public String author = null;
-    public String section = null;
-    public String subText = null;
-    public Date date = null;
-    private long dateRaw = -1;
+    private String date = null;
+    private String time = null;
+    private String title = null;
+    private String author = null;
+    private String section = null;
+    private String subText = null;
+    private String dateRaw = null;
     private String urlPage = null;
 
     @Override
@@ -38,47 +40,44 @@ public class NewsContainer extends BaseObservable {
                 "author='" + author + '\'' +
                 ", title='" + title + '\'' +
                 ", subText='" + subText + '\'' +
-                ", date=" + date +
-                ", dateRaw=" + dateRaw +
+                ", dateRaw='" + dateRaw + '\'' +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
                 ", urlPage='" + urlPage + '\'' +
                 ", section='" + section + '\'' +
                 '}';
     }
 
-    NewsContainer() {
+    NewsContainer(Context context) {
+        this.context = context;
     }
 
     //Getters
-    //See: https://codelabs.developers.google.com/codelabs/android-databinding/index.html?index=..%2F..index#6
-    //See: Android Data Binding Library - Update UI using Observable objects: https://www.youtube.com/watch?v=gP_zj-CIBvM
-    @Bindable
-    public String getTitle() {
+    String getTitle() {
         return title;
     }
 
-    @Bindable
-    public String getSubText() {
+    String getSubText() {
         return subText;
     }
 
-    @Bindable
-    public String getAuthor() {
+    String getAuthor() {
+        if (author == null) {
+            return context.getString(R.string.error_author);
+        }
         return author;
     }
 
-    @Bindable
-    public String getSection() {
+    String getSection() {
         return section;
     }
 
-    @Bindable
-    public String getDate() {
-        return dateFormat.format(date);
+    String getDate() {
+        return date;
     }
 
-    @Bindable
-    public String getTime() {
-        return timeFormat.format(date);
+    String getTime() {
+        return time;
     }
 
     Uri getPage() {
@@ -86,39 +85,40 @@ public class NewsContainer extends BaseObservable {
     }
 
     //Setters
-    NewsContainer setAuthor(String author) {
-        this.author = author;
-        notifyPropertyChanged(BR.author);
+    NewsContainer setAuthor(String text) {
+        this.author = text;
         return this;
     }
 
-    public void setSection(String section) {
-        this.section = section;
-        notifyPropertyChanged(BR.section);
-    }
-
-    NewsContainer setTitle(String title) {
-        this.title = title;
-        notifyPropertyChanged(BR.title);
+    NewsContainer setSection(String text) {
+        this.section = text;
         return this;
     }
 
-    NewsContainer setSubText(String subText) {
-        this.subText = subText;
-        notifyPropertyChanged(BR.subText);
+    NewsContainer setTitle(String text) {
+        this.title = text;
         return this;
     }
 
-    NewsContainer setDate(long dateRaw) {
-        this.dateRaw = dateRaw;
-        this.date = new Date(dateRaw);
-        notifyPropertyChanged(BR.date);
-        notifyPropertyChanged(BR.time);
+    NewsContainer setSubText(String text) {
+        this.subText = text;
         return this;
     }
 
-    NewsContainer setUrlPage(String urlPage) {
-        this.urlPage = urlPage;
+    NewsContainer setDate(String dateRaw) {
+        try {
+            this.date = dateFormat.parse(dateRaw).toString();
+            this.time = timeFormat.parse(dateRaw).toString();
+        } catch (ParseException error) {
+            Log.e(LOG_TAG, "Parse Date Error", error);
+            this.date = null;
+            this.time = null;
+        }
+        return this;
+    }
+
+    NewsContainer setUrlPage(String text) {
+        this.urlPage = text;
         return this;
     }
 }

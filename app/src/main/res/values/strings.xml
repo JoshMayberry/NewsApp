@@ -4,6 +4,7 @@
     <string name="spacer">|</string>
 
     <string name="error_unknown">N/A</string>
+    <string name="error_cancel">Loading Canceled</string>
     <string name="error_internet">No Internet Connection</string>
     <string name="error_article">No Articles Found</string>
     <string name="error_author">Anonymous</string>

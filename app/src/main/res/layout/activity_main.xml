@@ -41,13 +41,13 @@
 
             <!-- See: https://stackoverflow.com/questions/38407664/syntax-for-conditional-statements-in-android-xml-layout/38407767#38407767 -->
             <TextView
-                android:id="@+id/empty_view"
+                android:id="@+id/message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="@{newsViewModel.error}"
+                android:text="@{newsViewModel.message}"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:visibility="@{newsViewModel.error != null ? View.VISIBLE : View.GONE}"
+                android:visibility="@{newsViewModel.message != null ? View.VISIBLE : View.GONE}"
                 tools:text="No Articles Found" />
 
             <TextView
