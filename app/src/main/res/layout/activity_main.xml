@@ -21,10 +21,10 @@
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@={newsViewModel.searchValue}"
             android:background="@color/colorSecondaryLight"
             app:iconifiedByDefault="false"
             app:queryHint="test" />
+        <!--android:text="@={newsViewModel.searchValue}"-->
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -55,9 +55,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:text="@{newsViewModel.progress}"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:visibility="@{newsViewModel.busy}"
-                tools:text="@{newsViewModel.progress}" />
+                android:visibility="@{safeUnbox(newsViewModel.busy)}"
+                tools:text="50" />
 
             <ProgressBar
                 android:id="@+id/loading_indicator"
@@ -65,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:visibility="@{newsViewModel.busy}" />
+                android:visibility="@{safeUnbox(newsViewModel.busy)}" />
 
         </RelativeLayout>
     </LinearLayout>

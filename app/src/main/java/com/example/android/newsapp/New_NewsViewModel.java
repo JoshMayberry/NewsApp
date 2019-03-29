@@ -2,20 +2,11 @@ package com.example.android.newsapp;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-
-import androidx.databinding.BaseObservable;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-
-import androidx.annotation.NonNull;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -27,6 +18,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.databinding.BaseObservable;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 //Must be public to use data binding
 
@@ -140,6 +137,7 @@ public class New_NewsViewModel extends AndroidViewModel {
         return this;
     }
 
+    //Data methods
     boolean loadData() {
         if ((myAsyncTask != null) && (myAsyncTask.getStatus() != AsyncTask.Status.FINISHED)) {
             return false;
@@ -172,7 +170,7 @@ public class New_NewsViewModel extends AndroidViewModel {
      * Generates a query for the guardian api.
      * Here are some example queries that can be returned:
      * - http://content.guardianapis.com/search?api-key=test&order-by=relevance&show-tags=contributor
-     * - http://content.guardianapis.com/search?api-key=test&order-by=relevance&show-tags=contributor&show-elements=image&q=debates
+     * - http://content.guardianapis.com/search?api-key=test&order-by=relevance&show-tags=contributor&show-fields=thumbnail&q=debates
      */
     private String getQuery() {
         //Start url
@@ -187,11 +185,13 @@ public class New_NewsViewModel extends AndroidViewModel {
         query.append(sharedPrefs.getString(context.getString(R.string.settings_order_by_key), context.getString(R.string.settings_order_by_default)));
 
         //Show Author
+        //See: https://stackoverflow.com/questions/46670935/get-the-author-name-from-the-guardian-open-platform/46676842#46676842
         query.append("&show-tags=contributor");
 
         //Show Images
+        //See: https://stackoverflow.com/questions/40720921/rest-api-the-gurdian-get-image-url/40721009#40721009
         if (sharedPrefs.getBoolean(context.getString(R.string.settings_show_images_key), false)) {
-            query.append("&show-elements=image");
+            query.append("&show-fields=thumbnail");
         }
 
         //Search Query
@@ -269,13 +269,22 @@ public class New_NewsViewModel extends AndroidViewModel {
                         showError("Unknown Error: No result item");
                         return new ArrayList<>();
                     }
+
+                    //Extract basic information
                     container.setSection(resultItem.optString("sectionName"));
                     container.setDate(resultItem.optString("webPublicationDate"));
                     container.setTitle(resultItem.optString("webTitle"));
                     container.setUrlPage(resultItem.optString("webUrl"));
 
-                    JSONArray tags = resultItem.optJSONArray("tags");
+                    //Extract image
+                    JSONObject fields = resultItem.optJSONObject("fields");
+                    if (fields != null) {
+                        container.setUrlImage(fields.getString("thumbnail"));
+                    }
+
+                    //Extract author
                     container.setAuthor(null);
+                    JSONArray tags = resultItem.optJSONArray("tags");
                     if ((tags != null) && (tags.length() > 0)) {
                         for (int j = 0; j < tags.length(); j++) {
                             JSONObject tagItem = tags.optJSONObject(j);
@@ -283,19 +292,19 @@ public class New_NewsViewModel extends AndroidViewModel {
                                 showError("Unknown Error: No tag item");
                                 return new ArrayList<>();
                             }
-                            container.setAuthor(tagItem.getString("webTitle"));
-                            break;
+                            String author = tagItem.getString("webTitle");
+                            if (author != null) {
+                                container.setAuthor(author);
+                                break;
+                            }
                         }
                     }
-
-
+                    data.add(container);
                 }
-
             } catch (IOException | JSONException error) {
                 showError("Unknown Error", error);
                 return new ArrayList<>();
             }
-
             return data;
         }
 
@@ -365,6 +374,7 @@ public class New_NewsViewModel extends AndroidViewModel {
         }
     }
 
+    //Utility methods
     private void showError(String errorMessage) {
         Log.e(LOG_TAG, errorMessage);
         Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();

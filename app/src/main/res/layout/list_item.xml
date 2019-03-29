@@ -1,104 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/layout">
 
-    <data />
+	<data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+		<variable
+			name="container"
+			type="com.example.android.newsapp.NewsContainer" />
+	</data>
 
-        <TextView
-            android:id="@+id/title"
-            style="@style/TextAppearance.NewsApp.Title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sectionName"
-            tools:text="@string/lorem_ipsum" />
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/subText"
-            style="@style/TextAppearance.NewsApp.Abstract"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title"
-            tools:text="@string/lorem_ipsum" />
+		<ImageView
+			android:id="@+id/image"
+			android:layout_width="wrap_content"
+			android:layout_height="0dp"
+			android:layout_marginTop="8dp"
+			android:background="@color/colorPrimary"
+			app:imageUrl="@{container.image}"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/date"
+			tools:src="@drawable/ic_launcher_foreground" />
 
-        <TextView
-            android:id="@+id/sectionName"
-            style="@style/TextAppearance.NewsApp.Detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Politics" />
+		<TextView
+			android:id="@+id/title"
+			style="@style/TextAppearance.NewsApp.Title"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginEnd="8dp"
+			android:text="@{container.title}"
+			app:layout_constraintEnd_toStartOf="@+id/image"
+			app:layout_constraintHorizontal_bias="0.0"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="@+id/image"
+			tools:text="@string/lorem_ipsum" />
 
-        <TextView
-            android:id="@+id/author"
-            style="@style/TextAppearance.NewsApp.Detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toEndOf="@+id/spacer1"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="John Doe" />
+		<TextView
+			android:id="@+id/subText"
+			style="@style/TextAppearance.NewsApp.Abstract"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="8dp"
+			android:layout_marginBottom="8dp"
+			android:text="@{container.subText}"
+			app:layout_constraintBottom_toBottomOf="@+id/image"
+			app:layout_constraintEnd_toStartOf="@+id/image"
+			app:layout_constraintHorizontal_bias="0.222"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/title"
+			tools:text="@string/lorem_ipsum" />
 
-        <TextView
-            android:id="@+id/time"
-            style="@style/TextAppearance.NewsApp.Detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/spacer2"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="18:13" />
+		<TextView
+			android:id="@+id/sectionName"
+			style="@style/TextAppearance.NewsApp.Detail"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="8dp"
+			android:text="@{container.section}"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="Politics" />
 
-        <TextView
-            android:id="@+id/date"
-            style="@style/TextAppearance.NewsApp.Detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="02/01/20019" />
+		<TextView
+			android:id="@+id/author"
+			style="@style/TextAppearance.NewsApp.Detail"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="8dp"
+			android:text="@{container.author}"
+			app:layout_constraintStart_toEndOf="@+id/spacer2"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="John Doe" />
 
-        <TextView
-            android:id="@+id/spacer1"
-            style="@style/TextAppearance.NewsApp.Detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/spacer"
-            app:layout_constraintStart_toEndOf="@+id/sectionName"
-            app:layout_constraintTop_toTopOf="parent" />
+		<TextView
+			android:id="@+id/time"
+			style="@style/TextAppearance.NewsApp.Detail"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="8dp"
+			android:text="@{container.time}"
+			app:layout_constraintEnd_toStartOf="@+id/spacer1"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="18:13" />
 
-        <TextView
-            android:id="@+id/spacer2"
-            style="@style/TextAppearance.NewsApp.Detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/spacer"
-            app:layout_constraintEnd_toStartOf="@+id/date"
-            app:layout_constraintTop_toTopOf="parent" />
+		<TextView
+			android:id="@+id/date"
+			style="@style/TextAppearance.NewsApp.Detail"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="8dp"
+			android:text="@{container.date}"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="02/01/20019" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+		<TextView
+			android:id="@+id/spacer1"
+			style="@style/TextAppearance.NewsApp.Detail"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="8dp"
+			android:text="@string/spacer"
+			app:layout_constraintEnd_toStartOf="@+id/date"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<TextView
+			android:id="@+id/spacer2"
+			style="@style/TextAppearance.NewsApp.Detail"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="8dp"
+			android:text="@string/spacer"
+			app:layout_constraintStart_toEndOf="@+id/sectionName"
+			app:layout_constraintTop_toTopOf="parent" />
+	</androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
