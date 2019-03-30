@@ -13,17 +13,17 @@
     </string-array>
 
     <string-array name="credits_names">
-        <item>Asmaa</item>
-        <item>Mayur Kshirsagar</item>
+        <item>Ciubster</item>
+        <item>Rohan Misal</item>
     </string-array>
 
     <string-array name="credits_descriptions">
-        <item>No Network Image</item>
+        <item>No Network Ghost Image</item>
         <item>No Search Results Image</item>
     </string-array>
 
     <string-array name="credits_links">
-        <item>https://pngtree.com/asmaa_14420</item>
-        <item>https://www.uplabs.com/mayurksgr</item>
+        <item>https://www.uplabs.com/posts/empty-state-screen-icons</item>
+        <item>https://www.uplabs.com/posts/empty-screen-f59b59a3-dab6-4d22-81f9-6ccfabfbf9b6#</item>
     </string-array>
 </resources>

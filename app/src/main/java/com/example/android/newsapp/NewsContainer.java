@@ -1,5 +1,6 @@
 package com.example.android.newsapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -11,13 +12,15 @@ import com.bumptech.glide.Glide;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 import androidx.databinding.BindingAdapter;
 
 /**
- * Holds data pertaining to a list item for a {@link NewsAdapter}
+ * Holds data pertaining to a list item for a {@link MainActivity.NewsAdapter}
  * This is a Generic class that is meant to be extended by a child class.
  * <p>
  * Some methods (such as {@link #}) have a default action.
@@ -30,11 +33,12 @@ public class NewsContainer extends BaseObservable {
 	private Context context;
 
 	//See: https://developer.android.com/reference/java/text/DateFormat.html
+	@SuppressLint("SimpleDateFormat")
+	private static final SimpleDateFormat dateImportFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	private static final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
 	private static final DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
 
-	private String date = null;
-	private String time = null;
+	private Date date = null;
 	private String title = null;
 	private String author = null;
 	private String section = null;
@@ -50,8 +54,7 @@ public class NewsContainer extends BaseObservable {
 				", title='" + title + '\'' +
 				", subText='" + subText + '\'' +
 				", dateRaw='" + dateRaw + '\'' +
-				", date='" + date + '\'' +
-				", time='" + time + '\'' +
+				", date=" + date +
 				", urlPage='" + urlPage + '\'' +
 				", section='" + section + '\'' +
 				'}';
@@ -89,12 +92,12 @@ public class NewsContainer extends BaseObservable {
 
 	@Bindable
 	public String getDate() {
-		return date;
+		return dateFormat.format(date);
 	}
 
 	@Bindable
 	public String getTime() {
-		return time;
+		return timeFormat.format(date);
 	}
 
 	@Bindable
@@ -128,14 +131,13 @@ public class NewsContainer extends BaseObservable {
 	}
 
 	//See: https://stackoverflow.com/questions/10286204/the-right-json-date-format/15952652#15952652
+	//Use: https://stackoverflow.com/questions/8573250/android-how-can-i-convert-string-to-date/8573343#8573343
 	NewsContainer setDate(String dateRaw) {
 		try {
-			this.date = dateFormat.parse(dateRaw).toString();
-			this.time = timeFormat.parse(dateRaw).toString();
+			this.date = dateImportFormat.parse(dateRaw);
 		} catch (ParseException error) {
 			Log.e(LOG_TAG, "Parse Date Error", error);
 			this.date = null;
-			this.time = null;
 		}
 		return this;
 	}

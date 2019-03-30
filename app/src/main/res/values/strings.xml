@@ -1,34 +1,41 @@
 <resources>
-    <string name="app_name">News App</string>
-    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
-    <string name="spacer">|</string>
+	<string name="app_name">News App</string>
+	<string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+	<string name="spacer">|</string>
+	<string name="retry">Retry</string>
 
-    <string name="error_unknown">N/A</string>
-    <string name="error_cancel">Loading Canceled</string>
-    <string name="error_internet">No Internet Connection</string>
-    <string name="error_article">No Articles Found</string>
-    <string name="error_author">Anonymous</string>
+	<string name="error_unknown">N/A</string>
+	<string name="error_cancel">Loading Canceled</string>
+	<string name="error_author">Anonymous</string>
 
-    <!-- Strings related to Settings -->
-    <!-- See: https://open-platform.theguardian.com/documentation/search -->
-    <string name="settings_menu_item">Settings</string>
-    <string name="settings_title">News Settings</string>
+	<!-- See: https://stackoverflow.com/questions/38812995/android-textview-hyperlink/44556925#44556925 -->
+	<string name="error_internet_title">BOO!</string>
+	<string name="error_internet_subText">No Internet Connection. Make sure either wifi or internet is enabled, then try again.</string>
+	<string name="error_article_title">Oops! Nothing here!</string>
+	<string name="error_article_subText">We couldn\'t find anything related to your search criteria. Try some different key words.</string>
 
-    <string name="settings_show_images_label">Show Images</string>
-    <string name="settings_show_images_key" translatable="false">show_images</string>
-    <string name="settings_show_images_default" translatable="false">@string/settings_order_by_newest_value</string>
+	<!-- Strings related to Settings -->
+	<!-- See: https://open-platform.theguardian.com/documentation/search -->
+	<string name="settings_menu_item">Settings</string>
+	<string name="settings_title">News Settings</string>
 
-    <string name="settings_order_by_label">Order By</string>
-    <string name="settings_order_by_key" translatable="false">order_by</string>
-    <string name="settings_order_by_default" translatable="false">@string/settings_order_by_newest_value</string>
-
-    <string name="settings_order_by_newest_label">Newest</string>
-    <string name="settings_order_by_oldest_label">Oldest</string>
-    <string name="settings_order_by_relevance_label">Relevance</string>
-
-    <string name="settings_order_by_newest_value" translatable="false">newest</string>
-    <string name="settings_order_by_oldest_value" translatable="false">oldest</string>
-    <string name="settings_order_by_relevance_value" translatable="false">relevance</string>
 	<string name="credits_menu_item">Credits</string>
 	<string name="credits_title">Credits</string>
+
+	<string name="settings_show_images_label">Show Images</string>
+	<string name="settings_show_images_key" translatable="false">show_images</string>
+	<string name="settings_show_images_default" translatable="false">@string/settings_order_by_newest_value</string>
+
+	<string name="settings_order_by_label">Order By</string>
+	<string name="settings_order_by_key" translatable="false">order_by</string>
+	<string name="settings_order_by_default" translatable="false">@string/settings_order_by_newest_value</string>
+
+	<string name="settings_order_by_newest_label">Newest</string>
+	<string name="settings_order_by_oldest_label">Oldest</string>
+	<string name="settings_order_by_relevance_label">Relevance</string>
+
+	<string name="settings_order_by_newest_value" translatable="false">newest</string>
+	<string name="settings_order_by_oldest_value" translatable="false">oldest</string>
+	<string name="settings_order_by_relevance_value" translatable="false">relevance</string>
+
 </resources>

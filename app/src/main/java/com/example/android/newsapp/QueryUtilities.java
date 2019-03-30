@@ -1,5 +1,8 @@
 package com.example.android.newsapp;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
@@ -103,4 +106,12 @@ class QueryUtilities {
         }
         return output.toString();
     }
+
+	//See: https://developer.android.com/training/basics/network-ops/connecting.html
+	//Use: https://developer.android.com/training/monitoring-device-state/connectivity-monitoring.html#DetermineConnection
+	static boolean checkOnline(Context context) {
+		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		return networkInfo != null && networkInfo.isConnected();
+	}
 }
