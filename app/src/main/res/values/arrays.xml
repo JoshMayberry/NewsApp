@@ -11,4 +11,19 @@
         <item>@string/settings_order_by_oldest_value</item>
         <item>@string/settings_order_by_relevance_value</item>
     </string-array>
+
+    <string-array name="credits_names">
+        <item>Asmaa</item>
+        <item>Mayur Kshirsagar</item>
+    </string-array>
+
+    <string-array name="credits_descriptions">
+        <item>No Network Image</item>
+        <item>No Search Results Image</item>
+    </string-array>
+
+    <string-array name="credits_links">
+        <item>https://pngtree.com/asmaa_14420</item>
+        <item>https://www.uplabs.com/mayurksgr</item>
+    </string-array>
 </resources>

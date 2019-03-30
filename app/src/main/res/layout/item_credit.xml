@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/layout">
+
+	<data>
+		<!-- See: https://stackoverflow.com/questions/38407664/syntax-for-conditional-statements-in-android-xml-layout/38407767#38407767 -->
+		<import type="android.view.View" />
+
+		<variable
+			name="container"
+			type="com.example.android.newsapp.CreditContainer" />
+	</data>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:onClick="@{() -> container.onOpenPage()}">
+
+		<TextView
+			android:id="@+id/title"
+			style="@style/TextAppearance.AppCompat.Large"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="8dp"
+			android:text="@{container.name}"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			app:layout_constraintEnd_toStartOf="@+id/imageView"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="Asmaa" />
+
+		<TextView
+			android:id="@+id/subText"
+			style="@style/TextAppearance.AppCompat.Small"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="8dp"
+			android:layout_marginBottom="8dp"
+			android:text="@{container.description}"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toStartOf="@+id/imageView"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/title"
+			tools:text="No Network Image" />
+
+		<ImageView
+			android:id="@+id/imageView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="8dp"
+			android:layout_marginBottom="8dp"
+			android:tint="@color/colorSecondaryDark"
+			android:visibility="@{container.link != null ? View.VISIBLE : View.GONE}"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:srcCompat="@drawable/baseline_link_black_48" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

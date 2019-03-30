@@ -25,6 +25,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+//Image: https://pngtree.com/asmaa_14420
+
 //Must be public to use data binding
 
 /**
@@ -137,7 +139,6 @@ public class New_NewsViewModel extends AndroidViewModel {
         return this;
     }
 
-    //Data methods
     boolean loadData() {
         if ((myAsyncTask != null) && (myAsyncTask.getStatus() != AsyncTask.Status.FINISHED)) {
             return false;
@@ -235,6 +236,8 @@ public class New_NewsViewModel extends AndroidViewModel {
     @SuppressLint("StaticFieldLeak")
     private class MyAsyncClass extends AsyncTask<Void, Integer, List<NewsContainer>> {
 
+        private String errorMessage = null;
+
         /**
          * Gets a list of {@link NewsContainer} objects from the internet
          */
@@ -327,6 +330,7 @@ public class New_NewsViewModel extends AndroidViewModel {
             super.onPreExecute();
             setBusy(View.VISIBLE);
             setMessage(null);
+            errorMessage = null;
         }
 
         /**
@@ -334,6 +338,9 @@ public class New_NewsViewModel extends AndroidViewModel {
          */
         @Override
         protected void onPostExecute(List<NewsContainer> data) {
+            if (errorMessage != null) {
+                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
+            }
             containerList.setValue(data);
             setBusy(View.GONE);
 
@@ -372,16 +379,17 @@ public class New_NewsViewModel extends AndroidViewModel {
             }
             return false;
         }
-    }
 
-    //Utility methods
-    private void showError(String errorMessage) {
-        Log.e(LOG_TAG, errorMessage);
-        Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
-    }
+        //Utility methods
+        private void showError(String errorMessage) {
+            Log.e(LOG_TAG, errorMessage);
+            this.errorMessage = errorMessage;
+        }
 
-    private void showError(String errorMessage, Exception error) {
-        Log.e(LOG_TAG, errorMessage, error);
-        Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
+        private void showError(String errorMessage, Exception error) {
+            Log.e(LOG_TAG, errorMessage, error);
+            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
+            this.errorMessage = errorMessage;
+        }
     }
 }

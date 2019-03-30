@@ -29,4 +29,6 @@
     <string name="settings_order_by_newest_value" translatable="false">newest</string>
     <string name="settings_order_by_oldest_value" translatable="false">oldest</string>
     <string name="settings_order_by_relevance_value" translatable="false">relevance</string>
+	<string name="credits_menu_item">Credits</string>
+	<string name="credits_title">Credits</string>
 </resources>
