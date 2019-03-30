@@ -8,13 +8,11 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<ListView
+		<androidx.recyclerview.widget.RecyclerView
 			android:id="@+id/list"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:background="@color/colorSecondaryLight"
-			android:divider="@color/colorSecondaryDark"
-			android:dividerHeight="1dp"
 			android:orientation="vertical" />
 
 	</LinearLayout>

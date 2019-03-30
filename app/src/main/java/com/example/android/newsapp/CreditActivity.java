@@ -1,12 +1,9 @@
 package com.example.android.newsapp;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import com.example.android.newsapp.databinding.ActivityCreditsBinding;
 import com.example.android.newsapp.databinding.ItemCreditBinding;
@@ -14,14 +11,16 @@ import com.example.android.newsapp.databinding.ItemCreditBinding;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class CreditActivity extends AppCompatActivity {
 	String LOG_TAG = NewsActivity.class.getSimpleName();
 
 	ActivityCreditsBinding binding;
-
 	ArrayList<CreditContainer> containerList = new ArrayList<>();
 
 	@Override
@@ -29,7 +28,11 @@ public class CreditActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		binding = DataBindingUtil.setContentView(this, R.layout.activity_credits);
 		populateList();
-		binding.list.setAdapter(new CreditAdapter(this, containerList));
+
+		//Use: https://developer.android.com/guide/topics/ui/layout/recyclerview#workflow
+		binding.list.setHasFixedSize(true);
+		binding.list.setLayoutManager(new LinearLayoutManager(this));
+		binding.list.setAdapter(new CreditAdapter(containerList));
 	}
 
 	//See: https://developer.android.com/guide/topics/resources/string-resource#StringArray
@@ -48,32 +51,53 @@ public class CreditActivity extends AppCompatActivity {
 	}
 
 	/**
-	 * Handles recycling views on a {@link NewsActivity}.
+	 * See: https://traversoft.com/2016/01/31/replace-listview-with-recyclerview/#lets-get-on-with-it
+	 * Use: https://medium.com/androiddevelopers/android-data-binding-recyclerview-db7c40d9f0e4#481b
 	 */
-	private class CreditAdapter extends ArrayAdapter<CreditContainer> {
-		String LOG_TAG = CreditAdapter.class.getSimpleName();
-		private LayoutInflater inflater;
+	public class CreditHolder extends RecyclerView.ViewHolder {
+		String LOG_TAG = CreditHolder.class.getSimpleName();
+		private final ItemCreditBinding binding;
 
-		CreditAdapter(Context context, List<CreditContainer> containerList) {
-			super(context, 0, containerList);
+		CreditHolder(ItemCreditBinding binding) {
+			super(binding.getRoot());
+			this.binding = binding;
 		}
 
-		//See: https://github.com/nomanr/android-databinding-example/blob/master/app/src/main/java/com/databinding/example/databindingexample/adapters/SimpleAdapter.java
-		//Use: https://stackoverflow.com/questions/40557087/how-can-i-use-android-databinding-in-a-listview-and-still-use-a-viewholder-patte/40557175#40557175
+		public void bind(CreditContainer container) {
+			binding.setContainer(container);
+			binding.executePendingBindings();
+		}
+	}
+
+	/**
+	 * See: https://traversoft.com/2016/01/31/replace-listview-with-recyclerview/#lets-get-on-with-it
+	 * Use: https://medium.com/androiddevelopers/android-data-binding-recyclerview-db7c40d9f0e4#03b5
+	 */
+	public class CreditAdapter extends RecyclerView.Adapter<CreditHolder> {
+		String LOG_TAG = CreditAdapter.class.getSimpleName();
+		private final List<CreditContainer> containerList;
+
+		CreditAdapter(List<CreditContainer> containerList) {
+			this.containerList = containerList;
+		}
+
+		@NonNull
 		@Override
-		public View getView(int position, View scrapView, ViewGroup parent) {
-			if (inflater == null) {
-				inflater = LayoutInflater.from(getContext());
-			}
+		public CreditHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+			LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+			ItemCreditBinding itemBinding = ItemCreditBinding.inflate(layoutInflater, parent, false);
+			return new CreditHolder(itemBinding);
+		}
 
-			ItemCreditBinding binding = DataBindingUtil.getBinding(scrapView);
-			if (binding == null) {
-				binding = ItemCreditBinding.inflate(inflater, parent, false);
-			}
+		@Override
+		public void onBindViewHolder(@NonNull CreditHolder holder, int position) {
+			CreditContainer container = this.containerList.get(position);
+			holder.bind(container);
+		}
 
-			binding.setContainer(getItem(position));
-
-			return binding.getRoot();
+		@Override
+		public int getItemCount() {
+			return this.containerList.size();
 		}
 	}
 }
