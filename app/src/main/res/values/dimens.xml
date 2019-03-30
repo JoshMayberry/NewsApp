@@ -3,4 +3,5 @@
     <dimen name="border">8dp</dimen>
 	<dimen name="button_padding_width">42dp</dimen>
 	<dimen name="button_padding_height">16dp</dimen>
+	<dimen name="credit_item_spacing">8dp</dimen>
 </resources>
