@@ -203,6 +203,7 @@ public class NewsViewModel extends AndroidViewModel {
      * Here are some example queries that can be returned:
      * - http://content.guardianapis.com/search?api-key=test&order-by=relevance&show-tags=contributor
      * - http://content.guardianapis.com/search?api-key=test&order-by=relevance&show-tags=contributor&show-fields=thumbnail&q=debates
+	 * See: https://open-platform.theguardian.com/explore/
      */
     private String getQuery() {
         //Start url
@@ -213,8 +214,8 @@ public class NewsViewModel extends AndroidViewModel {
         query.append("?api-key=test");
 
         //Order By
-        query.append("&order-by=");
-        query.append(sharedPrefs.getString(context.getString(R.string.settings_order_by_key), context.getString(R.string.settings_order_by_default)));
+//        query.append("&order-by=relevance");
+//        query.append(sharedPrefs.getString(context.getString(R.string.settings_order_by_key), context.getString(R.string.settings_order_by_default)));
 
         //Show Author
         //See: https://stackoverflow.com/questions/46670935/get-the-author-name-from-the-guardian-open-platform/46676842#46676842
@@ -222,9 +223,9 @@ public class NewsViewModel extends AndroidViewModel {
 
         //Show Images
         //See: https://stackoverflow.com/questions/40720921/rest-api-the-gurdian-get-image-url/40721009#40721009
-        if (sharedPrefs.getBoolean(context.getString(R.string.settings_show_images_key), false)) {
-            query.append("&show-fields=thumbnail");
-        }
+//        if (sharedPrefs.getBoolean(context.getString(R.string.settings_show_images_key), true)) {
+            query.append("&show-fields=thumbnail,trailText");
+//        }
 
         //Search Query
         String messageValue = errorTitle.getValue();
@@ -233,6 +234,7 @@ public class NewsViewModel extends AndroidViewModel {
             query.append(messageValue);
         }
 
+        Log.e(LOG_TAG, "query: " + query.toString());
         return query.toString();
     }
 
@@ -321,7 +323,9 @@ public class NewsViewModel extends AndroidViewModel {
                     //Extract image
                     JSONObject fields = resultItem.optJSONObject("fields");
                     if (fields != null) {
-                        container.setUrlImage(fields.getString("thumbnail"));
+                    	Log.e(LOG_TAG, "fields: " + fields);
+						container.setSubText(fields.optString("trailText"));
+						container.setUrlImage(fields.optString("thumbnail"));
                     }
 
                     //Extract author
@@ -341,6 +345,7 @@ public class NewsViewModel extends AndroidViewModel {
                             }
                         }
                     }
+//                    Log.e(LOG_TAG, "container: " + container);
                     data.add(container);
 					publishProgress(data.size());
                 }

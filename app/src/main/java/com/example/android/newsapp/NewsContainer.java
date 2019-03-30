@@ -43,7 +43,6 @@ public class NewsContainer extends BaseObservable {
 	private String author = null;
 	private String section = null;
 	private String subText = null;
-	private String dateRaw = null;
 	private String urlPage = null;
 	private String urlImage = null;
 
@@ -53,10 +52,10 @@ public class NewsContainer extends BaseObservable {
 				"author='" + author + '\'' +
 				", title='" + title + '\'' +
 				", subText='" + subText + '\'' +
-				", dateRaw='" + dateRaw + '\'' +
 				", date=" + date +
-				", urlPage='" + urlPage + '\'' +
 				", section='" + section + '\'' +
+				", urlPage='" + urlPage + '\'' +
+				", urlImage='" + urlImage + '\'' +
 				'}';
 	}
 
@@ -217,15 +216,16 @@ public class NewsContainer extends BaseObservable {
 		}
 
 		//See: https://github.com/bumptech/glide/wiki/Transformations#user-content-default-transformations
-		switch (imageCropType) {
-			case "centerCrop":
-				builder.centerCrop();
-				break;
-			case "fitCenter":
-				builder.fitCenter();
-				break;
+		if (imageCropType != null) {
+			switch (imageCropType) {
+				case "centerCrop":
+					builder.centerCrop();
+					break;
+				case "fitCenter":
+					builder.fitCenter();
+					break;
+			}
 		}
-
 		//Finish
 		builder.into(view);
 	}
