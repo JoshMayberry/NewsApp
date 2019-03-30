@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="border">8dp</dimen>
+
 	<dimen name="button_padding_width">42dp</dimen>
 	<dimen name="button_padding_height">16dp</dimen>
+
+	<dimen name="news_item_spacing">8dp</dimen>
 	<dimen name="credit_item_spacing">8dp</dimen>
 </resources>

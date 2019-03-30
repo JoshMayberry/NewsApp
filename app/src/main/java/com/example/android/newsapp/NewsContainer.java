@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 import androidx.databinding.BindingAdapter;
@@ -46,6 +47,7 @@ public class NewsContainer extends BaseObservable {
 	private String urlPage = null;
 	private String urlImage = null;
 
+	@NonNull
 	@Override
 	public String toString() {
 		return "NewsContainer{" +

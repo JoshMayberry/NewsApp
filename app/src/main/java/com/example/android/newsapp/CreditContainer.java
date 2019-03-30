@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
@@ -16,6 +17,7 @@ public class CreditContainer extends BaseObservable {
 	private String description = null;
 	private String link = null;
 
+	@NonNull
 	@Override
 	public String toString() {
 		return "CreditContainer{" +
@@ -53,13 +55,13 @@ public class CreditContainer extends BaseObservable {
 		return this;
 	}
 
-	public CreditContainer setDescription(String description) {
+	CreditContainer setDescription(String description) {
 		this.description = description;
 		notifyPropertyChanged(BR.description);
 		return this;
 	}
 
-	public CreditContainer setLink(String link) {
+	CreditContainer setLink(String link) {
 		this.link = link;
 		return this;
 	}
