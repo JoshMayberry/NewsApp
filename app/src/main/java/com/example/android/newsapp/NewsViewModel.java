@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -30,7 +31,7 @@ import androidx.lifecycle.MutableLiveData;
 //Must be public to use data binding
 
 /**
- * Gathers data from the internet for an {@link android.widget.AdapterView} to populate {@link MainActivity} with.
+ * Gathers data from the internet for an {@link android.widget.AdapterView} to populate {@link NewsActivity} with.
  * See: https://medium.com/@taman.neupane/basic-example-of-livedata-and-viewmodel-14d5af922d0#7e70
  * Use: https://medium.com/androiddevelopers/lifecycle-aware-data-loading-with-android-architecture-components-f95484159de4#e65b
  * <p>
@@ -54,17 +55,21 @@ public class NewsViewModel extends AndroidViewModel {
      */
     private MutableLiveData<String> progress = new MutableLiveData<>();
 
-    /**
-     * Toggles the visibility progress bar.
-     * Can be set to {@link View#GONE} or {@link View#VISIBLE}.
-     */
-    private MutableLiveData<Integer> busy = new MutableLiveData<>();
+	/**
+	 * Toggles the visibility progress bar.
+	 * Can be set to {@link View#GONE} or {@link View#VISIBLE}.
+	 */
+	private MutableLiveData<Integer> busy = new MutableLiveData<>();
 
-    /**
-     * Displays any errors to the user.
-     * Will be invisible if set to {@link null}.
-     */
-    private MutableLiveData<String> message = new MutableLiveData<>();
+	/**
+	 * Displays any errors to the user.
+	 * Will be invisible if set to {@link null}.
+	 */
+	private MutableLiveData<Drawable> errorImage = new MutableLiveData<>();
+
+	private MutableLiveData<String> errorTitle = new MutableLiveData<>();
+
+	private MutableLiveData<String> errorSubText = new MutableLiveData<>();
 
     /**
      * What the user wants to search for.
@@ -96,15 +101,23 @@ public class NewsViewModel extends AndroidViewModel {
         return progress;
     }
 
-    public MutableLiveData<String> getMessage() {
-        return message;
+	public MutableLiveData<String> getSearchValue() {
+		return searchValue;
+	}
+
+	public MutableLiveData<String> getErrorTitle() {
+        return errorTitle;
     }
 
-    public MutableLiveData<String> getSearchValue() {
-        return searchValue;
-    }
+	public MutableLiveData<Drawable> getErrorImage() {
+		return errorImage;
+	}
 
-    NewsViewModel setBusy(Integer value) {
+	public MutableLiveData<String> getErrorSubText() {
+		return errorSubText;
+	}
+
+	NewsViewModel setBusy(Integer value) {
         this.busy.setValue(value);
         return this;
     }
@@ -119,16 +132,6 @@ public class NewsViewModel extends AndroidViewModel {
         return this;
     }
 
-    NewsViewModel setMessage(int resourceId) {
-        this.message.setValue(context.getString(resourceId));
-        return this;
-    }
-
-    NewsViewModel setMessage(String text) {
-        this.message.setValue(text);
-        return this;
-    }
-
     NewsViewModel setSearchValue(int resourceId) {
         this.searchValue.setValue(context.getString(resourceId));
         return this;
@@ -139,7 +142,35 @@ public class NewsViewModel extends AndroidViewModel {
         return this;
     }
 
-    boolean loadData() {
+	NewsViewModel setErrorTitle(int resourceId) {
+		this.errorTitle.setValue(context.getString(resourceId));
+		return this;
+	}
+
+	NewsViewModel setErrorTitle(String text) {
+		this.errorTitle.setValue(text);
+		return this;
+	}
+
+	NewsViewModel setErrorImage(Integer resourceId) {
+    	if (resourceId == null) {
+    		return this;
+		}
+		this.errorImage.setValue(context.getDrawable(resourceId));
+		return this;
+	}
+
+	NewsViewModel setErrorSubText(int resourceId) {
+		this.errorSubText.setValue(context.getString(resourceId));
+		return this;
+	}
+
+	NewsViewModel setErrorSubText(String text) {
+		this.errorSubText.setValue(text);
+		return this;
+	}
+
+	boolean loadData() {
         if ((myAsyncTask != null) && (myAsyncTask.getStatus() != AsyncTask.Status.FINISHED)) {
             return false;
         }
@@ -196,7 +227,7 @@ public class NewsViewModel extends AndroidViewModel {
         }
 
         //Search Query
-        String messageValue = message.getValue();
+        String messageValue = errorTitle.getValue();
         if ((messageValue != null) && (!messageValue.isEmpty())) {
             query.append("&q=");
             query.append(messageValue);
@@ -268,7 +299,7 @@ public class NewsViewModel extends AndroidViewModel {
                 for (int i = 0; i < results.length(); i++) {
 					//FOR DEBUGGING: Show loading wheel
 					try {
-						Thread.sleep(500);
+						Thread.sleep(100);
 					} catch (InterruptedException error) {
 						Log.e(LOG_TAG, "Unknown Thread Error", error);
 						return new ArrayList<>();
@@ -338,12 +369,14 @@ public class NewsViewModel extends AndroidViewModel {
         protected void onPreExecute() {
             super.onPreExecute();
             setBusy(View.VISIBLE);
-            setMessage(null);
-            errorMessage = null;
+			setErrorImage(null);
+			setErrorTitle(null);
+			setErrorSubText(null);
         }
 
         /**
          * Applies the downloaded list of {@link NewsContainer} objects to the UI and removes the {@link #busy} signal.
+		 * If there is no data, then the empty state is displayed.
          */
         @Override
         protected void onPostExecute(List<NewsContainer> data) {
@@ -352,6 +385,13 @@ public class NewsViewModel extends AndroidViewModel {
             }
             containerList.setValue(data);
             setBusy(View.GONE);
+
+            //Account for empty state
+            if (data.size() < 1) {
+				setErrorImage(R.drawable.error_no_content);
+				setErrorTitle(R.string.error_article_title);
+				setErrorSubText(R.string.error_article_subText);
+			}
         }
 
         /**
@@ -361,7 +401,7 @@ public class NewsViewModel extends AndroidViewModel {
         protected void onCancelled(List<NewsContainer> newsContainers) {
             super.onCancelled(newsContainers);
             setBusy(View.GONE);
-            setMessage(R.string.error_cancel);
+//            setErrorTitle(R.string.error_cancel);
         }
 
         private boolean hasError(JSONObject root, JSONObject response) throws JSONException {
@@ -375,8 +415,8 @@ public class NewsViewModel extends AndroidViewModel {
 					Log.e(LOG_TAG, "Status Error: " + status);
                     return true;
                 }
-            } else if (root.has("message")) {
-                String message = root.getString("message");
+            } else if (root.has("errorTitle")) {
+                String message = root.getString("errorTitle");
 				Log.e(LOG_TAG, "API Error: " + message);
                 return true;
             }

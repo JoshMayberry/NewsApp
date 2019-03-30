@@ -20,7 +20,7 @@ import androidx.databinding.Bindable;
 import androidx.databinding.BindingAdapter;
 
 /**
- * Holds data pertaining to a list item for a {@link MainActivity.NewsAdapter}
+ * Holds data pertaining to a list item for a {@link NewsActivity.NewsAdapter}
  * This is a Generic class that is meant to be extended by a child class.
  * <p>
  * Some methods (such as {@link #}) have a default action.

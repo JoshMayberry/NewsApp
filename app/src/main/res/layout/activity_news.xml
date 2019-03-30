@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<data>
+
+		<variable
+			name="newsViewModel"
+			type="com.example.android.newsapp.NewsViewModel" />
+	</data>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<SearchView
+			android:id="@+id/search"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="@color/colorSecondaryLight"
+			app:iconifiedByDefault="false"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:queryHint="test" />
+		<!--android:text="@={newsViewModel.searchValue}"-->
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/list"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:background="@color/colorPrimaryLight"
+			android:divider="@color/colorPrimaryDark"
+			android:dividerHeight="1dp"
+			android:orientation="vertical"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/search" />
+
+
+		<TextView
+			android:id="@+id/counter"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true"
+			android:layout_centerVertical="true"
+			android:text="@{newsViewModel.progress}"
+			android:textAppearance="?android:textAppearanceMedium"
+			android:visibility="@{safeUnbox(newsViewModel.busy)}"
+			app:layout_constraintBottom_toBottomOf="@+id/loading_indicator"
+			app:layout_constraintEnd_toEndOf="@+id/loading_indicator"
+			app:layout_constraintStart_toStartOf="@+id/loading_indicator"
+			app:layout_constraintTop_toTopOf="@+id/loading_indicator"
+			tools:text="50" />
+
+		<ProgressBar
+			android:id="@+id/loading_indicator"
+			style="@style/Widget.AppCompat.ProgressBar"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true"
+			android:layout_centerVertical="true"
+			android:layout_marginStart="8dp"
+			android:layout_marginEnd="8dp"
+			android:layout_marginBottom="8dp"
+			android:visibility="@{safeUnbox(newsViewModel.busy)}"
+			app:layout_constraintBottom_toBottomOf="@+id/list"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="@+id/list" />
+
+		<!-- See: https://stackoverflow.com/questions/38407664/syntax-for-conditional-statements-in-android-xml-layout/38407767#38407767 -->
+		<!-- android:visibility="@{newsViewModel.message != null ? View.VISIBLE : View.GONE}" -->
+		<ImageView
+			android:id="@+id/errorImage"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginEnd="8dp"
+			android:layout_marginBottom="8dp"
+			android:src="@{newsViewModel.errorImage}"
+			app:layout_constraintBottom_toTopOf="@+id/errorTitle"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			tools:src="@drawable/error_no_content" />
+
+		<TextView
+			android:id="@+id/errorTitle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:layout_marginTop="@dimen/border"
+			android:padding="@dimen/border"
+			android:text="@{newsViewModel.errorTitle}"
+			android:textAlignment="center"
+			android:textAppearance="@style/TextAppearance.NewsApp.Error.Title"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintVertical_bias="0.55"
+			tools:text="@string/error_article_title" />
+
+		<TextView
+			android:id="@+id/errorSubText"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:padding="@dimen/border"
+			android:text="@{newsViewModel.errorSubText}"
+			android:textAlignment="center"
+			android:textAppearance="@style/TextAppearance.NewsApp.Error.Message"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.0"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/errorTitle"
+			tools:text="@string/error_article_subText" />
+
+		<!--<Button-->
+		<!--android:id="@+id/retry"-->
+		<!--android:layout_width="wrap_content"-->
+		<!--android:layout_height="wrap_content"-->
+		<!--android:layout_marginStart="@dimen/border"-->
+		<!--android:layout_marginTop="24dp"-->
+		<!--android:layout_marginEnd="@dimen/border"-->
+		<!--android:background="@color/colorPrimaryDark"-->
+		<!--android:paddingStart="@dimen/button_padding_width"-->
+		<!--android:paddingTop="@dimen/button_padding_height"-->
+		<!--android:paddingEnd="@dimen/button_padding_width"-->
+		<!--android:paddingBottom="@dimen/button_padding_height"-->
+		<!--android:text="@string/retry"-->
+		<!--android:textAppearance="@style/TextAppearance.NewsApp.Error.Button"-->
+		<!--android:textColor="@android:color/primary_text_dark"-->
+		<!--app:layout_constraintEnd_toEndOf="parent"-->
+		<!--app:layout_constraintStart_toStartOf="parent"-->
+		<!--app:layout_constraintTop_toBottomOf="@+id/errorSubText" />-->
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 public class CreditActivity extends AppCompatActivity {
-	String LOG_TAG = MainActivity.class.getSimpleName();
+	String LOG_TAG = NewsActivity.class.getSimpleName();
 
 	ActivityCreditsBinding binding;
 
@@ -48,7 +48,7 @@ public class CreditActivity extends AppCompatActivity {
 	}
 
 	/**
-	 * Handles recycling views on a {@link MainActivity}.
+	 * Handles recycling views on a {@link NewsActivity}.
 	 */
 	private class CreditAdapter extends ArrayAdapter<CreditContainer> {
 		String LOG_TAG = CreditAdapter.class.getSimpleName();

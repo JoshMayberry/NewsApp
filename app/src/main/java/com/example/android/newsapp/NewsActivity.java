@@ -1,58 +1,68 @@
 package com.example.android.newsapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 
-import com.example.android.newsapp.databinding.FragmentSearchBinding;
+import com.example.android.newsapp.databinding.ActivityNewsBinding;
 import com.example.android.newsapp.databinding.ItemNewsBinding;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class SearchFragment extends Fragment {
-	String LOG_TAG = SearchFragment.class.getSimpleName();
-	FragmentSearchBinding binding;
+//To Emulate on an AMD Processor
+//Use: https://android-developers.googleblog.com/2018/07/android-emulator-amd-processor-hyper-v.html
+//Use: https://forum.level1techs.com/t/solved-no-virtualization-support-with-gigabyte-ga-ab350-gaming-3/114171/8
+
+public class NewsActivity extends AppCompatActivity {
+	String LOG_TAG = NewsActivity.class.getSimpleName();
+	ActivityNewsBinding binding;
 
 	NewsAdapter newsAdapter = null;
+	NewsViewModel newsViewModel = null;
 
-	@Nullable
 	@Override
-	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		FragmentActivity activity = getActivity();
-		if (activity == null) {
-			Log.e(LOG_TAG, "Unknown Error: No Activity in onCreateView");
-			return null;
-		}
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-		//See: https://stackoverflow.com/questions/34706399/how-to-use-data-binding-with-fragment/40527833#40527833
-		binding = FragmentSearchBinding.inflate(inflater, container, false);
+		//See: https://codelabs.developers.google.com/codelabs/android-databinding/index.html?index=..%2F..index#4
+		//Bug: https://stackoverflow.com/questions/34368329/data-binding-android-type-parameter-t-has-incompatible-upper-bounds-viewdata/37364609#37364609
+		binding = DataBindingUtil.setContentView(this, R.layout.activity_news);
 
+		setupLiveData();
+		setupRecyclerView();
+	}
+
+	private void setupLiveData() {
 		//See: https://www.journaldev.com/22561/android-mvvm-livedata-data-binding#viewmodel
-		NewsViewModel newsViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
+		newsViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
 		binding.setNewsViewModel(newsViewModel);
 		newsViewModel.loadData();
 
 		//LiveData needs the binding to know who the lifecycle owner is
 		//See: https://proandroiddev.com/advanced-data-binding-binding-to-livedata-one-and-two-way-binding-dae1cd68530f#a2ea
 		binding.setLifecycleOwner(this);
+	}
 
+	private void setupRecyclerView() {
 		//Use: https://developer.android.com/guide/topics/ui/layout/recyclerview#workflow
 		binding.list.setHasFixedSize(true);
-		binding.list.setLayoutManager(new LinearLayoutManager(activity));
-		newsAdapter = new NewsAdapter(activity.getApplicationContext(), newsViewModel.getContainerList());
+		binding.list.setLayoutManager(new LinearLayoutManager(this));
+		newsAdapter = new NewsAdapter(getApplicationContext(), newsViewModel.getContainerList());
 		binding.list.setAdapter(newsAdapter);
 
 		//Populate list
@@ -62,20 +72,8 @@ public class SearchFragment extends Fragment {
 		newsViewModel.getContainerList().observe(this, new Observer<List<NewsContainer>>() {
 			@Override
 			public void onChanged(List<NewsContainer> containerList) {
-				Log.e(LOG_TAG, "containerList: " + containerList.size());
-
-				FragmentActivity activity = getActivity();
-				if (activity == null) {
-					Log.e(LOG_TAG, "Unknown Error: No Activity in onChanged");
-					return;
-				}
-
-//				if (containerList.size() > 0) {
-//					//See: https://medium.com/@guendouz/room-livedata-and-recyclerview-d8e96fb31dfe#ff4c
-//					newsAdapter.notifyDataSetChanged();
-//				} else {
-				FragmentUtilities.showNoContent(activity.getSupportFragmentManager(), R.id.fragment_container);
-//				}
+				//See: https://medium.com/@guendouz/room-livedata-and-recyclerview-d8e96fb31dfe#ff4c
+				newsAdapter.notifyDataSetChanged();
 			}
 		});
 
@@ -93,9 +91,30 @@ public class SearchFragment extends Fragment {
 				binding.counter.setText(progress);
 			}
 		});
+	}
 
+	//See: http://developer.android.com/guide/topics/ui/menus.html
+	//See: https://github.com/udacity/ud843-QuakeReport/commit/c24e4a9d3226d4aec8c847d454a7eab23872d721
+	//Use: https://developer.android.com/guide/topics/ui/menus#options-menu
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
 
-		return binding.getRoot();
+	//Use: https://developer.android.com/guide/topics/ui/menus#RespondingOptionsMenu
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.action_settings:
+				startActivity(new Intent(this, SettingsActivity.class));
+				return true;
+			case R.id.action_credits:
+				startActivity(new Intent(this, CreditActivity.class));
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 
 	/**
@@ -158,4 +177,5 @@ public class SearchFragment extends Fragment {
 			return containerListContents.size();
 		}
 	}
+
 }
