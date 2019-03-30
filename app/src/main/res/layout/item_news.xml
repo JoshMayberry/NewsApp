@@ -20,7 +20,8 @@
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:background="@color/colorPrimaryLight">
+			android:background="@color/colorPrimaryLight"
+			android:onClick="@{() -> container.onOpenPage()}">
 
 			<ImageView
 				android:id="@+id/image"
@@ -79,14 +80,19 @@
 			<TextView
 				android:id="@+id/author"
 				style="@style/TextAppearance.NewsApp.Detail"
-				android:layout_width="wrap_content"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="8dp"
 				android:layout_marginTop="8dp"
+				android:layout_marginEnd="32dp"
+				android:ellipsize="end"
+				android:maxLines="1"
 				android:text="@{container.author}"
+				app:layout_constraintEnd_toStartOf="@+id/time"
+				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toEndOf="@+id/spacer2"
 				app:layout_constraintTop_toTopOf="parent"
-				tools:text="John Doe" />
+				tools:text="John DoeJohn DoeJohn DoeJohn DoeJohn Doe" />
 
 			<TextView
 				android:id="@+id/time"
@@ -133,6 +139,7 @@
 				android:text="@string/spacer"
 				app:layout_constraintStart_toEndOf="@+id/sectionName"
 				app:layout_constraintTop_toTopOf="parent" />
+
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
 	</androidx.cardview.widget.CardView>

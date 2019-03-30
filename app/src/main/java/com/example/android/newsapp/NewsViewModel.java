@@ -221,14 +221,17 @@ public class NewsViewModel extends AndroidViewModel {
         //See: https://stackoverflow.com/questions/46670935/get-the-author-name-from-the-guardian-open-platform/46676842#46676842
         query.append("&show-tags=contributor");
 
+        //Show Sub Text
+		query.append("&show-fields=trailText");
+
         //Show Images
         //See: https://stackoverflow.com/questions/40720921/rest-api-the-gurdian-get-image-url/40721009#40721009
-//        if (sharedPrefs.getBoolean(context.getString(R.string.settings_show_images_key), true)) {
-            query.append("&show-fields=thumbnail,trailText");
-//        }
+        if (sharedPrefs.getBoolean(context.getString(R.string.settings_show_images_key), true)) {
+            query.append(",thumbnail");
+        }
 
         //Search Query
-        String messageValue = errorTitle.getValue();
+        String messageValue = searchValue.getValue();
         if ((messageValue != null) && (!messageValue.isEmpty())) {
             query.append("&q=");
             query.append(messageValue);
@@ -323,7 +326,6 @@ public class NewsViewModel extends AndroidViewModel {
                     //Extract image
                     JSONObject fields = resultItem.optJSONObject("fields");
                     if (fields != null) {
-                    	Log.e(LOG_TAG, "fields: " + fields);
 						container.setSubText(fields.optString("trailText"));
 						container.setUrlImage(fields.optString("thumbnail"));
                     }
@@ -345,7 +347,6 @@ public class NewsViewModel extends AndroidViewModel {
                             }
                         }
                     }
-//                    Log.e(LOG_TAG, "container: " + container);
                     data.add(container);
 					publishProgress(data.size());
                 }

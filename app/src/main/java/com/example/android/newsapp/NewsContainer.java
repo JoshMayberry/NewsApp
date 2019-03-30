@@ -2,6 +2,7 @@ package com.example.android.newsapp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
@@ -21,7 +22,7 @@ import androidx.databinding.Bindable;
 import androidx.databinding.BindingAdapter;
 
 /**
- * Holds data pertaining to a list item for a {@link NewsActivity.NewsAdapter}
+ * Holds data pertaining to a list item for a {@link NewsManager.GenericAdapter}
  * This is a Generic class that is meant to be extended by a child class.
  * <p>
  * Some methods (such as {@link #}) have a default action.
@@ -151,6 +152,16 @@ public class NewsContainer extends BaseObservable {
 	NewsContainer setUrlImage(String text) {
 		this.urlImage = text;
 		return this;
+	}
+
+	public void onOpenPage() {
+		if (urlPage == null) {
+			return;
+		}
+		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlPage));
+		if (intent.resolveActivity(context.getPackageManager()) != null) {
+			context.startActivity(intent);
+		}
 	}
 
 	/**

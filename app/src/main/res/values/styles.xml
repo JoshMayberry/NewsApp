@@ -22,10 +22,10 @@
 		<item name = "android:textAllCaps">true</item>
 	</style>
 
-	<style name="TextAppearance.NewsApp.Error.Title" parent="TextAppearance.AppCompat.Display1">
+	<style name="TextAppearance.NewsApp.Error.Title" parent="TextAppearance.AppCompat.Large">
 	</style>
 
-	<style name="TextAppearance.NewsApp.Error.Message" parent="TextAppearance.AppCompat.Large">
+	<style name="TextAppearance.NewsApp.Error.Message" parent="TextAppearance.AppCompat.Medium">
 	</style>
 
 	<style name="TextAppearance.NewsApp.Error.Button" parent="TextAppearance.AppCompat.Large">

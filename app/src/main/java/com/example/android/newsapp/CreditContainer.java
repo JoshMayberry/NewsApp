@@ -3,7 +3,6 @@ package com.example.android.newsapp;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
@@ -68,7 +67,6 @@ public class CreditContainer extends BaseObservable {
 
 	//Methods
 	public void onOpenPage() {
-		Log.e(LOG_TAG, "@OpenPage");
 		if (link == null) {
 			return;
 		}
