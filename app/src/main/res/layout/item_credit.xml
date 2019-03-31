@@ -14,6 +14,7 @@
 			type="com.example.android.newsapp.CreditContainer" />
 	</data>
 
+	<!-- See: https://www.binpress.com/android-recyclerview-cardview-guide/ -->
 	<androidx.cardview.widget.CardView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"

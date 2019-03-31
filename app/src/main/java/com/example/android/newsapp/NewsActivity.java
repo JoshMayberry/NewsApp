@@ -35,6 +35,7 @@ public class NewsActivity extends AppCompatActivity {
 
 		setupLiveData();
 		setupRecyclerView();
+		setupSearchBar();
 	}
 
 	private void setupLiveData() {
@@ -77,38 +78,15 @@ public class NewsActivity extends AppCompatActivity {
 			}
 		});
 
-//		//Use: https://developer.android.com/guide/topics/ui/layout/recyclerview#workflow
-//		binding.list.setHasFixedSize(true);
-//		binding.list.setLayoutManager(new LinearLayoutManager(this));
-//		newsAdapter = new NewsAdapter(getApplicationContext(), newsViewModel.getContainerList());
-//		binding.list.setAdapter(newsAdapter);
-//
-//		//Populate list
-//		//See: https://stackoverflow.com/questions/49405616/cannot-resolve-symbol-viewmodelproviders-on-appcompatactivity/49407157#49407157
-//		//See: https://medium.com/androiddevelopers/lifecycle-aware-data-loading-with-android-architecture-components-f95484159de4#e65b
-//		//Use: https://medium.com/@guendouz/room-livedata-and-recyclerview-d8e96fb31dfe#a62e
-//		newsViewModel.getContainerList().observe(this, new Observer<List<NewsContainer>>() {
-//			@Override
-//			public void onChanged(List<NewsContainer> containerList) {
-//				//See: https://medium.com/@guendouz/room-livedata-and-recyclerview-d8e96fb31dfe#ff4c
-//				newsAdapter.notifyDataSetChanged();
-//			}
-//		});
-//
-//		//Reset: https://stackoverflow.com/a/22474821/7316734
-//
-//		//Display progress
-//		newsViewModel.getProgress().observe(this, new Observer<String>() {
-//			@Override
-//			public void onChanged(@Nullable String progress) {
-//				// update UI
-//				if (progress == null) {
-//					return;
-//				}
-//
-//				binding.counter.setText(progress);
-//			}
-//		});
+	}
+
+	private void setupSearchBar() {
+		newsViewModel.getSearchValue().observe(this, new Observer<String>() {
+			@Override
+			public void onChanged(@Nullable String newValue) {
+				newsViewModel.restartData();
+			}
+		});
 	}
 
 	//See: http://developer.android.com/guide/topics/ui/menus.html
@@ -134,65 +112,4 @@ public class NewsActivity extends AppCompatActivity {
 				return super.onOptionsItemSelected(item);
 		}
 	}
-
-//	/**
-//	 * See: https://traversoft.com/2016/01/31/replace-listview-with-recyclerview/#lets-get-on-with-it
-//	 * Use: https://medium.com/androiddevelopers/android-data-binding-recyclerview-db7c40d9f0e4#481b
-//	 */
-//	public class NewsHolder extends RecyclerView.ViewHolder {
-//		String LOG_TAG = NewsHolder.class.getSimpleName();
-//		private final ItemNewsBinding binding;
-//
-//		NewsHolder(ItemNewsBinding binding) {
-//			super(binding.getRoot());
-//			this.binding = binding;
-//		}
-//
-//		public void bind(NewsContainer container) {
-//			binding.setContainer(container);
-//			binding.executePendingBindings();
-//		}
-//	}
-//
-//	/**
-//	 * See: https://traversoft.com/2016/01/31/replace-listview-with-recyclerview/#lets-get-on-with-it
-//	 * Use: https://medium.com/androiddevelopers/android-data-binding-recyclerview-db7c40d9f0e4#03b5
-//	 */
-//	public class NewsAdapter extends RecyclerView.Adapter<NewsHolder> {
-//		String LOG_TAG = NewsAdapter.class.getSimpleName();
-//		private final LiveData<List<NewsContainer>> containerList;
-//		private Context context;
-//
-//		NewsAdapter(Context context, LiveData<List<NewsContainer>> containerList) {
-//			this.containerList = containerList;
-//			this.context = context;
-//		}
-//
-//		@NonNull
-//		@Override
-//		public NewsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//			LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-//			ItemNewsBinding itemBinding = ItemNewsBinding.inflate(layoutInflater, parent, false);
-//			return new NewsHolder(itemBinding);
-//		}
-//
-//		@Override
-//		public void onBindViewHolder(@NonNull NewsHolder holder, int position) {
-//			List<NewsContainer> containerListContents = this.containerList.getValue();
-//			if (containerListContents == null) {
-//				return;
-//			}
-//			NewsContainer container = containerListContents.get(position);
-//			holder.bind(container);
-//		}
-//
-//		@Override
-//		public int getItemCount() {
-//			List<NewsContainer> containerListContents = this.containerList.getValue();
-//			if (containerListContents == null) {
-//				return 0;
-//			}
-//			return containerListContents.size();
-//		}
-//	}
 }

@@ -14,17 +14,20 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
+		<!-- See: Providing Search with SearchView (Android Development Patterns Ep 7) - https://www.youtube.com/watch?v=9OWmnYPX1uc-->
 		<SearchView
 			android:id="@+id/search"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:background="@color/colorSecondaryLight"
+			android:iconifiedByDefault="false"
+			android:queryHint="Type your keyword here"
 			app:iconifiedByDefault="false"
+
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
-			app:queryHint="test" />
-		<!--android:text="@={newsViewModel.searchValue}"-->
+			app:query="@={newsViewModel.searchValue}" />
 
 		<androidx.recyclerview.widget.RecyclerView
 			android:id="@+id/list"
@@ -37,37 +40,6 @@
 			app:layout_constraintTop_toBottomOf="@+id/search" />
 
 
-		<TextView
-			android:id="@+id/counter"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_centerHorizontal="true"
-			android:layout_centerVertical="true"
-			android:text="@{newsViewModel.progress}"
-			android:textAppearance="?android:textAppearanceMedium"
-			android:visibility="@{safeUnbox(newsViewModel.busy)}"
-			app:layout_constraintBottom_toBottomOf="@+id/loading_indicator"
-			app:layout_constraintEnd_toEndOf="@+id/loading_indicator"
-			app:layout_constraintStart_toStartOf="@+id/loading_indicator"
-			app:layout_constraintTop_toTopOf="@+id/loading_indicator"
-			tools:text="50" />
-
-		<ProgressBar
-			android:id="@+id/loading_indicator"
-			style="@style/Widget.AppCompat.ProgressBar"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_centerHorizontal="true"
-			android:layout_centerVertical="true"
-			android:layout_marginStart="8dp"
-			android:layout_marginEnd="8dp"
-			android:layout_marginBottom="8dp"
-			android:visibility="@{safeUnbox(newsViewModel.busy)}"
-			app:layout_constraintBottom_toBottomOf="@+id/list"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="@+id/list" />
-
 		<!-- See: https://stackoverflow.com/questions/38407664/syntax-for-conditional-statements-in-android-xml-layout/38407767#38407767 -->
 		<!-- android:visibility="@{newsViewModel.message != null ? View.VISIBLE : View.GONE}" -->
 		<ImageView
@@ -75,12 +47,15 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="8dp"
+			android:layout_marginTop="16dp"
 			android:layout_marginEnd="8dp"
 			android:layout_marginBottom="8dp"
 			android:src="@{newsViewModel.errorImage}"
 			app:layout_constraintBottom_toTopOf="@+id/errorTitle"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="@+id/list"
+			app:layout_constraintVertical_bias="1.0"
 			tools:src="@drawable/error_no_content" />
 
 		<TextView
@@ -115,24 +90,58 @@
 			app:layout_constraintTop_toBottomOf="@+id/errorTitle"
 			tools:text="@string/error_article_subText" />
 
-		<!--<Button-->
-		<!--android:id="@+id/retry"-->
-		<!--android:layout_width="wrap_content"-->
-		<!--android:layout_height="wrap_content"-->
-		<!--android:layout_marginStart="@dimen/border"-->
-		<!--android:layout_marginTop="24dp"-->
-		<!--android:layout_marginEnd="@dimen/border"-->
-		<!--android:background="@color/colorPrimaryDark"-->
-		<!--android:paddingStart="@dimen/button_padding_width"-->
-		<!--android:paddingTop="@dimen/button_padding_height"-->
-		<!--android:paddingEnd="@dimen/button_padding_width"-->
-		<!--android:paddingBottom="@dimen/button_padding_height"-->
-		<!--android:text="@string/retry"-->
-		<!--android:textAppearance="@style/TextAppearance.NewsApp.Error.Button"-->
-		<!--android:textColor="@android:color/primary_text_dark"-->
-		<!--app:layout_constraintEnd_toEndOf="parent"-->
-		<!--app:layout_constraintStart_toStartOf="parent"-->
-		<!--app:layout_constraintTop_toBottomOf="@+id/errorSubText" />-->
+		<ProgressBar
+			android:id="@+id/loading_indicator"
+			style="@style/Widget.AppCompat.ProgressBar"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true"
+			android:layout_centerVertical="true"
+			android:layout_marginStart="8dp"
+			android:layout_marginEnd="8dp"
+			android:layout_marginBottom="8dp"
+			android:visibility="@{safeUnbox(newsViewModel.busy)}"
+			app:layout_constraintBottom_toBottomOf="@+id/list"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="@+id/list"
+			app:layout_constraintVertical_bias="0.15" />
+
+		<TextView
+			android:id="@+id/counter"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true"
+			android:layout_centerVertical="true"
+			android:text="@{newsViewModel.progress}"
+			android:textAppearance="?android:textAppearanceMedium"
+			android:visibility="@{safeUnbox(newsViewModel.busy)}"
+			app:layout_constraintBottom_toBottomOf="@+id/loading_indicator"
+			app:layout_constraintEnd_toEndOf="@+id/loading_indicator"
+			app:layout_constraintStart_toStartOf="@+id/loading_indicator"
+			app:layout_constraintTop_toTopOf="@+id/loading_indicator"
+			tools:text="50" />
+
+		<Button
+			android:id="@+id/retry"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/border"
+			android:layout_marginTop="24dp"
+			android:layout_marginEnd="@dimen/border"
+			android:background="@color/colorPrimaryDark"
+			android:paddingStart="@dimen/button_padding_width"
+			android:paddingTop="@dimen/button_padding_height"
+			android:paddingEnd="@dimen/button_padding_width"
+			android:paddingBottom="@dimen/button_padding_height"
+			android:text="@string/retry"
+			android:textAppearance="@style/TextAppearance.NewsApp.Error.Button"
+			android:textColor="@android:color/primary_text_dark"
+			android:visibility="@{safeUnbox(newsViewModel.retry)}"
+			android:onClick="@{() -> newsViewModel.restartData()}"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/errorSubText" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
