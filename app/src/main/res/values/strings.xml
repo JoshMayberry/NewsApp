@@ -2,7 +2,9 @@
 	<string name="app_name">News App</string>
 	<string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
 	<string name="spacer">|</string>
-	<string name="retry">Retry</string>
+	<string name="retry">Retry Connecting</string>
+	<string name="openNetwork">Open Network\nSettings</string>
+	<string name="openData">Open Data\nSettings</string>
 
 	<string name="error_unknown">N/A</string>
 	<string name="error_cancel">Loading Canceled</string>

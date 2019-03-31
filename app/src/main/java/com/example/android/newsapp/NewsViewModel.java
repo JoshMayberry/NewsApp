@@ -3,6 +3,7 @@ package com.example.android.newsapp;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -10,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.SearchView;
@@ -175,6 +177,43 @@ public class NewsViewModel extends AndroidViewModel {
 		return this;
 	}
 
+	//Use: https://stackoverflow.com/questions/6000452/how-can-i-launch-mobile-network-settings-screen-from-my-code/6789616#6789616
+	public void openNetworkSettings() {
+		Intent intent = new Intent(Intent.ACTION_MAIN);
+		intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting");
+		context.startActivity(intent);
+	}
+
+	//Use: https://stackoverflow.com/questions/12147182/mobile-network-settings-in-android-4-1
+	public void openDataSettings() {
+		Intent intent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+		intent.setClassName("com.android.phone", "com.android.phone.MobileNetworkSettings");
+		context.startActivity(intent);
+	}
+
+	/**
+	 * Checks to see if the phone is connected to the internet or not.
+	 * See: https://developer.android.com/training/basics/network-ops/connecting.html
+	 * Use: https://developer.android.com/training/monitoring-device-state/connectivity-monitoring.html#DetermineConnection
+	 */
+	private boolean checkOnline() {
+		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		if (networkInfo != null && networkInfo.isConnected()) {
+			setRety(View.GONE);
+			return true;
+		}
+
+		Toast.makeText(context, "No Network", Toast.LENGTH_SHORT).show();
+		containerList.setValue(null);
+		setBusy(View.GONE);
+		setRety(View.VISIBLE);
+		setErrorImage(R.drawable.error_no_internet);
+		setErrorTitle(R.string.error_internet_title);
+		setErrorSubText(R.string.error_internet_subText);
+		return false;
+	}
+
 	//Search Methods
 	public MutableLiveData<String> getSearchValue() {
 		return searchValue;
@@ -232,30 +271,6 @@ public class NewsViewModel extends AndroidViewModel {
 	}
 
 	//Data Methods
-
-	/**
-	 * Checks to see if the phone is connected to the internet or not.
-	 * See: https://developer.android.com/training/basics/network-ops/connecting.html
-	 * Use: https://developer.android.com/training/monitoring-device-state/connectivity-monitoring.html#DetermineConnection
-	 */
-	private boolean checkOnline() {
-		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		if (networkInfo != null && networkInfo.isConnected()) {
-			setRety(View.GONE);
-			return true;
-		}
-
-		Toast.makeText(context, "No Network", Toast.LENGTH_SHORT).show();
-		containerList.setValue(null);
-		setBusy(View.GONE);
-		setRety(View.VISIBLE);
-		setErrorImage(R.drawable.error_no_internet);
-		setErrorTitle(R.string.error_internet_title);
-		setErrorSubText(R.string.error_internet_subText);
-		return false;
-	}
-
 	boolean loadData() {
 		if (!checkOnline()) {
 			return false;
