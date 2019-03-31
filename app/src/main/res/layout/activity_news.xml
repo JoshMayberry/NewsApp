@@ -4,6 +4,9 @@
 	xmlns:tools="http://schemas.android.com/tools">
 
 	<data>
+		<!-- See: https://stackoverflow.com/questions/38407664/syntax-for-conditional-statements-in-android-xml-layout/38407767#38407767 -->
+		<import type="android.view.View" />
+		<import type="android.text.InputType" />
 
 		<variable
 			name="newsViewModel"
@@ -23,7 +26,7 @@
 			android:iconifiedByDefault="false"
 			android:queryHint="Type your keyword here"
 			app:iconifiedByDefault="false"
-
+			android:inputType="@{newsViewModel.retry == View.GONE ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_NULL}"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
@@ -43,52 +46,48 @@
 		<!-- See: https://stackoverflow.com/questions/38407664/syntax-for-conditional-statements-in-android-xml-layout/38407767#38407767 -->
 		<!-- android:visibility="@{newsViewModel.message != null ? View.VISIBLE : View.GONE}" -->
 		<ImageView
-		android:id="@+id/errorImage"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="8dp"
-		android:layout_marginTop="16dp"
-		android:layout_marginEnd="8dp"
-		android:layout_marginBottom="8dp"
-		android:src="@{newsViewModel.errorImage}"
-		app:layout_constraintBottom_toTopOf="@+id/errorTitle"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="@+id/list"
-		app:layout_constraintVertical_bias="1.0"
-		tools:src="@drawable/error_no_content" />
+			android:id="@+id/errorImage"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginEnd="8dp"
+			android:layout_marginBottom="16dp"
+			android:src="@{newsViewModel.errorImage}"
+			app:layout_constraintBottom_toTopOf="@+id/errorTitle"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			tools:src="@drawable/error_no_content" />
 
 		<TextView
-		android:id="@+id/errorTitle"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_centerInParent="true"
-		android:layout_marginTop="@dimen/border"
-		android:padding="@dimen/border"
-		android:text="@{newsViewModel.errorTitle}"
-		android:textAlignment="center"
-		android:textAppearance="@style/TextAppearance.NewsApp.Error.Title"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintVertical_bias="0.55"
-		tools:text="@string/error_article_title" />
+			android:id="@+id/errorTitle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:layout_marginBottom="16dp"
+			android:padding="@dimen/border"
+			android:text="@{newsViewModel.errorTitle}"
+			android:textAlignment="center"
+			android:textAppearance="@style/TextAppearance.NewsApp.Error.Title"
+			app:layout_constraintBottom_toTopOf="@+id/errorSubText"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="1.0"
+			app:layout_constraintStart_toStartOf="parent"
+			tools:text="@string/error_article_title" />
 
 		<TextView
-		android:id="@+id/errorSubText"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
-		android:padding="@dimen/border"
-		android:text="@{newsViewModel.errorSubText}"
-		android:textAlignment="center"
-		android:textAppearance="@style/TextAppearance.NewsApp.Error.Message"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.0"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/errorTitle"
-		tools:text="@string/error_article_subText" />
+			android:id="@+id/errorSubText"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="32dp"
+			android:padding="@dimen/border"
+			android:text="@{newsViewModel.errorSubText}"
+			android:textAlignment="center"
+			android:textAppearance="@style/TextAppearance.NewsApp.Error.Message"
+			app:layout_constraintBottom_toTopOf="@+id/retry"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.0"
+			app:layout_constraintStart_toStartOf="parent"
+			tools:text="@string/error_article_subText" />
 
 		<ProgressBar
 		android:id="@+id/loading_indicator"
@@ -127,8 +126,8 @@
 			android:layout_width="wrap_content"
 			android:layout_height="0dp"
 			android:layout_marginStart="@dimen/border"
-			android:layout_marginTop="24dp"
 			android:layout_marginEnd="@dimen/border"
+			android:layout_marginBottom="16dp"
 			android:background="@color/colorPrimaryDark"
 			android:onClick="@{() -> newsViewModel.restartData()}"
 			android:paddingStart="@dimen/button_padding_width"
@@ -139,29 +138,29 @@
 			android:textAppearance="@style/TextAppearance.NewsApp.Error.Button"
 			android:textColor="@android:color/primary_text_dark"
 			android:visibility="@{safeUnbox(newsViewModel.retry)}"
+			app:layout_constraintBottom_toTopOf="@+id/openNetwork"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/errorSubText" />
+			app:layout_constraintStart_toStartOf="parent" />
 
 		<Button
 			android:id="@+id/openNetwork"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
+			android:layout_marginBottom="32dp"
 			android:background="@color/colorPrimaryDark"
 			android:onClick="@{() -> newsViewModel.openNetworkSettings()}"
-			android:paddingStart="@dimen/button_padding_width"
-			android:paddingTop="@dimen/button_padding_height"
-			android:paddingEnd="@dimen/button_padding_width"
-			android:paddingBottom="@dimen/button_padding_height"
+			android:paddingStart="16dp"
+			android:paddingTop="8dp"
+			android:paddingEnd="16dp"
+			android:paddingBottom="8dp"
 			android:text="@string/openNetwork"
 			android:textAppearance="@style/TextAppearance.NewsApp.Error.Message"
 			android:textColor="@android:color/primary_text_dark"
 			android:visibility="@{safeUnbox(newsViewModel.retry)}"
+			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toStartOf="@+id/openData"
 			app:layout_constraintHorizontal_bias="0.5"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/retry" />
+			app:layout_constraintStart_toStartOf="parent" />
 
 		<Button
 			android:id="@+id/openData"
@@ -169,10 +168,10 @@
 			android:layout_height="wrap_content"
 			android:background="@color/colorPrimaryDark"
 			android:onClick="@{() -> newsViewModel.openDataSettings()}"
-			android:paddingStart="@dimen/button_padding_width"
-			android:paddingTop="@dimen/button_padding_height"
-			android:paddingEnd="@dimen/button_padding_width"
-			android:paddingBottom="@dimen/button_padding_height"
+			android:paddingStart="16dp"
+			android:paddingTop="8dp"
+			android:paddingEnd="16dp"
+			android:paddingBottom="8dp"
 			android:text="@string/openData"
 			android:textAppearance="@style/TextAppearance.NewsApp.Error.Message"
 			android:textColor="@android:color/primary_text_dark"
