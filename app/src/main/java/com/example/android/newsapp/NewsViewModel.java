@@ -6,11 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +30,7 @@ import androidx.databinding.InverseBindingListener;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.preference.PreferenceManager;
 
 //Must be public to use data binding
 
@@ -44,11 +42,15 @@ import androidx.lifecycle.MutableLiveData;
  * The data binding connects with {@link MutableLiveData} the same way as {@link BaseObservable} methods, except no notification needs to happen.
  * See: https://proandroiddev.com/advanced-data-binding-binding-to-livedata-one-and-two-way-binding-dae1cd68530f#49f8
  * See: https://www.journaldev.com/22561/android-mvvm-livedata-data-binding#refactoring-observablefield-to-livedata
+ * <p>
+ * All Public getter methods for {@link MutableLiveData} variables are visible to data binding; no need for {@link @Binding}.
+ * See: https://proandroiddev.com/advanced-data-binding-binding-to-livedata-one-and-two-way-binding-dae1cd68530f#49f8
+ * See: https://www.journaldev.com/22561/android-mvvm-livedata-data-binding#refactoring-observablefield-to-livedata
  */
 public class NewsViewModel extends AndroidViewModel {
 	private static String LOG_TAG = NewsViewModel.class.getSimpleName();
-	private SharedPreferences sharedPrefs;
 	private MyAsyncClass myAsyncTask = null;
+	private SharedPreferences sharedPreferences;
 	private Context context;
 
 	// Mutable Objects
@@ -91,8 +93,7 @@ public class NewsViewModel extends AndroidViewModel {
 		super(application);
 		context = application;
 
-		//See: https://developer.android.com/guide/topics/ui/settings/use-saved-values#reading_preference_values
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(application);
+		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
 	}
 
 	//News Methods
@@ -100,9 +101,6 @@ public class NewsViewModel extends AndroidViewModel {
 		return containerList;
 	}
 
-	//Public getter methods of MutableLiveData are visible to data binding
-	//See: https://proandroiddev.com/advanced-data-binding-binding-to-livedata-one-and-two-way-binding-dae1cd68530f#49f8
-	//See: https://www.journaldev.com/22561/android-mvvm-livedata-data-binding#refactoring-observablefield-to-livedata
 	public MutableLiveData<Integer> getBusy() {
 		return busy;
 	}
@@ -177,14 +175,20 @@ public class NewsViewModel extends AndroidViewModel {
 		return this;
 	}
 
-	//Use: https://stackoverflow.com/questions/6000452/how-can-i-launch-mobile-network-settings-screen-from-my-code/6789616#6789616
+	/**
+	 * Opens the network settings on the phone.
+	 * Use: https://stackoverflow.com/questions/6000452/how-can-i-launch-mobile-network-settings-screen-from-my-code/6789616#6789616
+	 */
 	public void openNetworkSettings() {
 		Intent intent = new Intent(Intent.ACTION_MAIN);
 		intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting");
 		context.startActivity(intent);
 	}
 
-	//Use: https://stackoverflow.com/questions/12147182/mobile-network-settings-in-android-4-1
+	/**
+	 * Opens the data settings on the phone.
+	 * Use: https://stackoverflow.com/questions/12147182/mobile-network-settings-in-android-4-1
+	 */
 	public void openDataSettings() {
 		Intent intent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
 		intent.setClassName("com.android.phone", "com.android.phone.MobileNetworkSettings");
@@ -197,9 +201,7 @@ public class NewsViewModel extends AndroidViewModel {
 	 * Use: https://developer.android.com/training/monitoring-device-state/connectivity-monitoring.html#DetermineConnection
 	 */
 	private boolean checkOnline() {
-		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		if (networkInfo != null && networkInfo.isConnected()) {
+		if (QueryUtilities.checkOnline(context)) {
 			setRety(View.GONE);
 			return true;
 		}
@@ -229,33 +231,57 @@ public class NewsViewModel extends AndroidViewModel {
 		return this;
 	}
 
-
-	//Use: https://stackoverflow.com/questions/49769861/android-databinding-query-property-of-searchview-inside-toolbar
+	/**
+	 * The setter method for the user's query text.
+	 * Example Use:
+	 * <pre>
+	 *     <SearchView
+	 *          ...
+	 * 			app:query="@{newsViewModel.searchValue}" />
+	 * </pre>
+	 * Use: https://stackoverflow.com/questions/49769861/android-databinding-query-property-of-searchview-inside-toolbar
+	 */
 	@BindingAdapter("query")
 	public static void setQuery(SearchView view, String queryText) {
-		Log.e(LOG_TAG, "@setQuery: " + queryText);
+		//Prevent observer from firing upon code startup
+		CharSequence viewText = view.getQuery();
+		if ((queryText == null) && (viewText.length() == 0)) {
+			return;
+		}
 
 		//Prevent infinite loops
 		//See: https://medium.com/androiddevelopers/android-data-binding-2-way-your-way-ccac20f6313#97c2
-		if (queryText != view.getQuery()) {
+		if (queryText != viewText) {
 			view.setQuery(queryText, false);
 		}
 	}
 
-	//See: https://proandroiddev.com/advanced-data-binding-binding-to-livedata-one-and-two-way-binding-dae1cd68530f#7381
+	/**
+	 * The getter method for the user's query text.
+	 * This method allows two way binding; which means the value will automatically change here if the user changes it on the UI.
+	 * Example Use:
+	 * <pre>
+	 *     <SearchView
+	 *          ...
+	 * 			app:query="@={newsViewModel.searchValue}" />
+	 * </pre>
+	 * See: https://proandroiddev.com/advanced-data-binding-binding-to-livedata-one-and-two-way-binding-dae1cd68530f#7381
+	 */
 	@InverseBindingAdapter(attribute = "query")
 	public static String getQuery(SearchView view) {
-		Log.e(LOG_TAG, "@getQuery: " + view.getQuery());
 		return String.valueOf(view.getQuery());
 	}
 
-	//See: https://medium.com/androiddevelopers/android-data-binding-2-way-your-way-ccac20f6313#381d
-	//See: https://medium.com/@henglim/diving-into-android-data-binding-inverse-data-binding-783e5e5a83d3#2d93
-	//Use: https://medium.com/@henglim/diving-into-android-data-binding-inverse-data-binding-783e5e5a83d3#4e6d
+	/**
+	 * In order for two way binding to work, this extra method is needed.
+	 * See: https://medium.com/androiddevelopers/android-data-binding-2-way-your-way-ccac20f6313#381d
+	 * See: https://medium.com/@henglim/diving-into-android-data-binding-inverse-data-binding-783e5e5a83d3#2d93
+	 * Use: https://medium.com/@henglim/diving-into-android-data-binding-inverse-data-binding-783e5e5a83d3#4e6d
+	 */
 	@BindingAdapter({"queryAttrChanged"})
 	public static void setQueryChanged(SearchView view, final InverseBindingListener listener) {
 		//See: https://developer.android.com/reference/android/widget/SearchView.OnQueryTextListener#public-methods_1
-		//Use: https://stackoverflow.com/questions/26306717/how-to-listen-to-keyboard-search-button-in-searchview/26306959#26306959
+		//See: https://stackoverflow.com/questions/26306717/how-to-listen-to-keyboard-search-button-in-searchview/26306959#26306959
 		view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			@Override
 			public boolean onQueryTextSubmit(String query) {
@@ -315,6 +341,7 @@ public class NewsViewModel extends AndroidViewModel {
 	 * - http://content.guardianapis.com/search?api-key=test&order-by=relevance&show-tags=contributor&show-fields=thumbnail&q=debates
 	 * See: https://open-platform.theguardian.com/explore/
 	 * See: https://open-platform.theguardian.com/documentation/search
+	 * Use: https://developer.android.com/guide/topics/ui/settings/use-saved-values#reading_preference_values
 	 */
 	private String getQuery() {
 		//Start url
@@ -325,8 +352,11 @@ public class NewsViewModel extends AndroidViewModel {
 		query.append("?api-key=test");
 
 		//Order By
-//        query.append("&order-by=relevance");
-//        query.append(sharedPrefs.getString(context.getString(R.string.settings_order_by_key), context.getString(R.string.settings_order_by_default)));
+		String orderBy = sharedPreferences.getString(context.getString(R.string.settings_order_by_key), null);
+		if ((orderBy != null) && (!orderBy.isEmpty())) {
+			query.append("&order-by=");
+			query.append(orderBy);
+		}
 
 		//Show Author
 		//See: https://stackoverflow.com/questions/46670935/get-the-author-name-from-the-guardian-open-platform/46676842#46676842
@@ -337,7 +367,7 @@ public class NewsViewModel extends AndroidViewModel {
 
 		//Show Images
 		//See: https://stackoverflow.com/questions/40720921/rest-api-the-gurdian-get-image-url/40721009#40721009
-		if (sharedPrefs.getBoolean(context.getString(R.string.settings_show_images_key), true)) {
+		if (sharedPreferences.getBoolean(context.getString(R.string.settings_show_images_key), true)) {
 			query.append(",thumbnail");
 		}
 
@@ -395,7 +425,7 @@ public class NewsViewModel extends AndroidViewModel {
 			try {
 				//Get the initial JSON list of containers
 				String jsonResponseList = QueryUtilities.makeHttpRequest(getQuery());
-				if (jsonResponseList == null) {
+				if (jsonResponseList.isEmpty()) {
 					Log.e(LOG_TAG, "Get JSON error");
 					return new ArrayList<>();
 				}
@@ -414,12 +444,12 @@ public class NewsViewModel extends AndroidViewModel {
 				}
 				for (int i = 0; i < results.length(); i++) {
 					//FOR DEBUGGING: Show loading wheel
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException error) {
-						Log.e(LOG_TAG, "Unknown Thread Error", error);
-						return new ArrayList<>();
-					}
+//					try {
+//						Thread.sleep(100);
+//					} catch (InterruptedException error) {
+//						Log.e(LOG_TAG, "Unknown Thread Error", error);
+//						return new ArrayList<>();
+//					}
 
 					NewsContainer container = new NewsContainer(context);
 					JSONObject resultItem = results.optJSONObject(i);

@@ -26,7 +26,6 @@
 
 	<string name="settings_show_images_label">Show Images</string>
 	<string name="settings_show_images_key" translatable="false">show_images</string>
-	<string name="settings_show_images_default" translatable="false">@string/settings_order_by_newest_value</string>
 
 	<string name="settings_order_by_label">Order By</string>
 	<string name="settings_order_by_key" translatable="false">order_by</string>

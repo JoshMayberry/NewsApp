@@ -1,9 +1,7 @@
 package com.example.android.newsapp;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +10,6 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
@@ -52,33 +49,34 @@ abstract class GenericManager<T extends BaseObservable> extends LinearLayoutMana
 		return this;
 	}
 
-	//Use: https://developer.android.com/guide/topics/ui/layout/recyclerview#workflow
+	/**
+	 * Either a {@link List<T>} object or a {@link NewsViewModel} object can be given to compose the list.
+	 */
 	void formatAsListView(RecyclerView view, List<T> containerList) {
-
-		view.setHasFixedSize(true);
-		view.setLayoutManager(this);
-		if (spacing != null) {
-			view.addItemDecoration(new VerticalSpaceItemDecorator());
-		}
-
-//		view.addItemDecoration(new ShadowVerticalSpaceItemDecorator(R.drawable.drop_shadow_secondary));
-
+		pre_formatAsListView(view);
 		genericAdapter = new GenericAdapter(containerList);
 		view.setAdapter(genericAdapter);
 	}
 
-	//Use: https://developer.android.com/guide/topics/ui/layout/recyclerview#workflow
+	/**
+	 * Either a {@link List<T>} object or a {@link NewsViewModel} object can be given to compose the list.
+	 */
 	void formatAsListView(RecyclerView view, NewsViewModel viewModel) {
-		LiveData containerList = viewModel.getContainerList();
+		pre_formatAsListView(view);
+		genericAdapter = new GenericAdapter((LiveData) viewModel.getContainerList());
+		view.setAdapter(genericAdapter);
+	}
 
+	/**
+	 * Sets up the view.
+	 * Use: https://developer.android.com/guide/topics/ui/layout/recyclerview#workflow
+	 */
+	private void pre_formatAsListView(RecyclerView view) {
 		view.setHasFixedSize(true);
 		view.setLayoutManager(this);
 		if (spacing != null) {
 			view.addItemDecoration(new VerticalSpaceItemDecorator());
 		}
-
-		genericAdapter = new GenericAdapter(containerList);
-		view.setAdapter(genericAdapter);
 	}
 
 	GenericAdapter getAdapter() {
@@ -187,34 +185,6 @@ abstract class GenericManager<T extends BaseObservable> extends LinearLayoutMana
 			//Account for spacing
 			if (parent.getChildAdapterPosition(view) != adapter.getItemCount() - 1) {
 				outRect.bottom = spacing;
-			}
-		}
-	}
-
-	/**
-	 * This {@link RecyclerView.ItemDecoration} creates a drop shadow for items in the {@link GenericAdapter}.
-	 * Use: https://traversoft.com/2016/01/31/replace-listview-with-recyclerview/#now-the-extra-recyclerview-bits
-	 */
-	class ShadowVerticalSpaceItemDecorator extends RecyclerView.ItemDecoration {
-		private Drawable divider;
-
-		ShadowVerticalSpaceItemDecorator(int resourceId) {
-			this.divider = ContextCompat.getDrawable(context, resourceId);
-		}
-
-		@Override
-		public void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-			int paddingLeft = parent.getPaddingLeft();
-			int paddingRight = parent.getWidth() - parent.getPaddingRight();
-
-			for (int i = 0; i < parent.getChildCount(); i++) {
-				View item = parent.getChildAt(i);
-				RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) item.getLayoutParams();
-				int paddingTop = item.getBottom() + layoutParams.bottomMargin;
-				int paddingBottom = paddingTop + divider.getIntrinsicHeight();
-
-				divider.setBounds(paddingLeft, paddingTop, paddingRight, paddingBottom);
-				divider.draw(canvas);
 			}
 		}
 	}

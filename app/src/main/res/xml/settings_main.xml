@@ -7,15 +7,15 @@
 <androidx.preference.PreferenceScreen
     xmlns:app="http://schemas.android.com/apk/res-auto">
         <SwitchPreferenceCompat
-            app:key="showImages"
-            app:title="Show Images"/>
+            app:key="@string/settings_show_images_key"
+            app:title="@string/settings_show_images_label"/>
 
     <!-- See: https://developer.android.com/reference/androidx/preference/ListPreference -->
     <!-- Use: https://stackoverflow.com/questions/9880841/using-list-preference-in-android/9881253#9881253 -->
     <!-- Use: https://stackoverflow.com/questions/5197228/how-to-set-the-default-value-of-a-listpreference/17509197#17509197 -->
     <ListPreference
-        app:key="orderBy"
-        app:title="Order By"
+        app:key="@string/settings_order_by_key"
+        app:title="@string/settings_order_by_label"
         app:defaultValue="@strings/settings_order_by_default"
         app:entries="@array/settings_order_by_labels"
         app:entryValues="@array/settings_order_by_values"/>

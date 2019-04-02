@@ -64,19 +64,19 @@ class QueryUtilities {
         HttpURLConnection urlConnection = null;
         InputStream inputStream = null;
         try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setReadTimeout(10000);
-            urlConnection.setConnectTimeout(15000);
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
+			urlConnection = (HttpURLConnection) url.openConnection();
+			urlConnection.setReadTimeout(10000);
+			urlConnection.setConnectTimeout(15000);
+			urlConnection.setRequestMethod("GET");
+			urlConnection.connect();
 
-            if (urlConnection.getResponseCode() == 200) {
-                inputStream = urlConnection.getInputStream();
-                jsonResponse = readFromStream(inputStream);
-            } else {
-                Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
-            }
-        } catch (IOException error) {
+			if (urlConnection.getResponseCode() == 200) {
+				inputStream = urlConnection.getInputStream();
+				jsonResponse = readFromStream(inputStream);
+			} else {
+				Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
+			}
+		} catch (IOException error) {
             Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results.", error);
         } finally {
             if (urlConnection != null) {
@@ -107,8 +107,11 @@ class QueryUtilities {
         return output.toString();
     }
 
-	//See: https://developer.android.com/training/basics/network-ops/connecting.html
-	//Use: https://developer.android.com/training/monitoring-device-state/connectivity-monitoring.html#DetermineConnection
+	/**
+	 * Checks internet connectivity.
+	 * See: https://developer.android.com/training/basics/network-ops/connecting.html
+	 * Use: https://developer.android.com/training/monitoring-device-state/connectivity-monitoring.html#DetermineConnection
+	 */
 	static boolean checkOnline(Context context) {
 		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();

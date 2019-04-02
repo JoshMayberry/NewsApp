@@ -6,6 +6,7 @@
 	<data>
 		<!-- See: https://stackoverflow.com/questions/38407664/syntax-for-conditional-statements-in-android-xml-layout/38407767#38407767 -->
 		<import type="android.view.View" />
+
 		<import type="android.text.InputType" />
 
 		<variable
@@ -24,9 +25,9 @@
 			android:layout_height="wrap_content"
 			android:background="@color/colorSecondaryLight"
 			android:iconifiedByDefault="false"
+			android:inputType="@{newsViewModel.retry == View.GONE ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_NULL}"
 			android:queryHint="Type your keyword here"
 			app:iconifiedByDefault="false"
-			android:inputType="@{newsViewModel.retry == View.GONE ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_NULL}"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
@@ -90,36 +91,36 @@
 			tools:text="@string/error_article_subText" />
 
 		<ProgressBar
-		android:id="@+id/loading_indicator"
-		style="@style/Widget.AppCompat.ProgressBar"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_centerHorizontal="true"
-		android:layout_centerVertical="true"
-		android:layout_marginStart="8dp"
-		android:layout_marginEnd="8dp"
-		android:layout_marginBottom="8dp"
-		android:visibility="@{safeUnbox(newsViewModel.busy)}"
-		app:layout_constraintBottom_toBottomOf="@+id/list"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="@+id/list"
-		app:layout_constraintVertical_bias="0.15" />
+			android:id="@+id/loading_indicator"
+			style="@style/Widget.AppCompat.ProgressBar"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true"
+			android:layout_centerVertical="true"
+			android:layout_marginStart="8dp"
+			android:layout_marginEnd="8dp"
+			android:layout_marginBottom="8dp"
+			android:visibility="@{safeUnbox(newsViewModel.busy)}"
+			app:layout_constraintBottom_toBottomOf="@+id/list"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="@+id/list"
+			app:layout_constraintVertical_bias="0.15" />
 
 		<TextView
-		android:id="@+id/counter"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_centerHorizontal="true"
-		android:layout_centerVertical="true"
-		android:text="@{newsViewModel.progress}"
-		android:textAppearance="?android:textAppearanceMedium"
-		android:visibility="@{safeUnbox(newsViewModel.busy)}"
-		app:layout_constraintBottom_toBottomOf="@+id/loading_indicator"
-		app:layout_constraintEnd_toEndOf="@+id/loading_indicator"
-		app:layout_constraintStart_toStartOf="@+id/loading_indicator"
-		app:layout_constraintTop_toTopOf="@+id/loading_indicator"
-		tools:text="50" />
+			android:id="@+id/counter"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true"
+			android:layout_centerVertical="true"
+			android:text="@{newsViewModel.progress}"
+			android:textAppearance="?android:textAppearanceMedium"
+			android:visibility="@{safeUnbox(newsViewModel.busy)}"
+			app:layout_constraintBottom_toBottomOf="@+id/loading_indicator"
+			app:layout_constraintEnd_toEndOf="@+id/loading_indicator"
+			app:layout_constraintStart_toStartOf="@+id/loading_indicator"
+			app:layout_constraintTop_toTopOf="@+id/loading_indicator"
+			tools:text="50" />
 
 		<Button
 			android:id="@+id/retry"

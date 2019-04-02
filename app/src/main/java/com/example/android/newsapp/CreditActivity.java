@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+/**
+ * This {@link AppCompatActivity} provides links to the artists whose art I used for this app.
+ * Each asset credit is a {@link CreditContainer}. The list of credits is displayed by a {@link CreditManager}.
+ */
 public class CreditActivity extends AppCompatActivity {
 	String LOG_TAG = NewsActivity.class.getSimpleName();
 
