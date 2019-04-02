@@ -34,7 +34,7 @@ public class CreditContainer extends BaseObservable {
 				'}';
 	}
 
-	CreditContainer(Context context) {
+	public CreditContainer(Context context) {
 		this.context = context;
 	}
 
@@ -60,13 +60,13 @@ public class CreditContainer extends BaseObservable {
 		return this;
 	}
 
-	CreditContainer setDescription(String description) {
+	public CreditContainer setDescription(String description) {
 		this.description = description;
 		notifyPropertyChanged(BR.description);
 		return this;
 	}
 
-	CreditContainer setLink(String link) {
+	public CreditContainer setLink(String link) {
 		this.link = link;
 		return this;
 	}

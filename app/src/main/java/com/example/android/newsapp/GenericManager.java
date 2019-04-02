@@ -30,12 +30,12 @@ abstract class GenericManager<T extends BaseObservable> extends LinearLayoutMana
 	private int itemLayoutId;
 	private GenericAdapter genericAdapter;
 
-	GenericManager(Context context) {
+	public GenericManager(Context context) {
 		super(context);
 		this.context = context;
 	}
 
-	GenericManager setSpacingId(Integer resourceId) {
+	public GenericManager setSpacingId(Integer resourceId) {
 		if (resourceId == null) {
 			this.spacing = null;
 		} else {
@@ -44,7 +44,7 @@ abstract class GenericManager<T extends BaseObservable> extends LinearLayoutMana
 		return this;
 	}
 
-	GenericManager setItemLayoutId(int resourceId) {
+	public GenericManager setItemLayoutId(int resourceId) {
 		this.itemLayoutId = resourceId;
 		return this;
 	}
@@ -52,7 +52,7 @@ abstract class GenericManager<T extends BaseObservable> extends LinearLayoutMana
 	/**
 	 * Either a {@link List<T>} object or a {@link NewsViewModel} object can be given to compose the list.
 	 */
-	void formatAsListView(RecyclerView view, List<T> containerList) {
+	public void formatAsListView(RecyclerView view, List<T> containerList) {
 		pre_formatAsListView(view);
 		genericAdapter = new GenericAdapter(containerList);
 		view.setAdapter(genericAdapter);
@@ -61,7 +61,7 @@ abstract class GenericManager<T extends BaseObservable> extends LinearLayoutMana
 	/**
 	 * Either a {@link List<T>} object or a {@link NewsViewModel} object can be given to compose the list.
 	 */
-	void formatAsListView(RecyclerView view, NewsViewModel viewModel) {
+	public void formatAsListView(RecyclerView view, NewsViewModel viewModel) {
 		pre_formatAsListView(view);
 		genericAdapter = new GenericAdapter((LiveData) viewModel.getContainerList());
 		view.setAdapter(genericAdapter);
@@ -79,7 +79,7 @@ abstract class GenericManager<T extends BaseObservable> extends LinearLayoutMana
 		}
 	}
 
-	GenericAdapter getAdapter() {
+	public GenericAdapter getAdapter() {
 		return genericAdapter;
 	}
 
@@ -89,7 +89,7 @@ abstract class GenericManager<T extends BaseObservable> extends LinearLayoutMana
 	 * See: https://medium.com/androiddevelopers/android-data-binding-recyclerview-db7c40d9f0e4#481b
 	 * Use: https://medium.com/androiddevelopers/android-data-binding-recyclerview-db7c40d9f0e4#c856
 	 */
-	class GenericHolder extends RecyclerView.ViewHolder {
+	public class GenericHolder extends RecyclerView.ViewHolder {
 		String LOG_TAG = GenericHolder.class.getSimpleName();
 		private final ViewDataBinding binding;
 
@@ -111,7 +111,7 @@ abstract class GenericManager<T extends BaseObservable> extends LinearLayoutMana
 	 * See: https://medium.com/androiddevelopers/android-data-binding-recyclerview-db7c40d9f0e4#03b5
 	 * Use: https://medium.com/androiddevelopers/android-data-binding-recyclerview-db7c40d9f0e4#6620
 	 */
-	class GenericAdapter extends RecyclerView.Adapter<GenericHolder> {
+	public class GenericAdapter extends RecyclerView.Adapter<GenericHolder> {
 		String LOG_TAG = GenericManager.class.getSimpleName();
 		private List<T> containerList = null;
 		private LiveData<List<T>> liveContainerList = null;
@@ -171,7 +171,7 @@ abstract class GenericManager<T extends BaseObservable> extends LinearLayoutMana
 	 * This {@link RecyclerView.ItemDecoration} spaces out items in the {@link GenericAdapter}.
 	 * Use: https://traversoft.com/2016/01/31/replace-listview-with-recyclerview/#now-the-extra-recyclerview-bits
 	 */
-	class VerticalSpaceItemDecorator extends RecyclerView.ItemDecoration {
+	public class VerticalSpaceItemDecorator extends RecyclerView.ItemDecoration {
 		String LOG_TAG = VerticalSpaceItemDecorator.class.getSimpleName();
 
 		@Override

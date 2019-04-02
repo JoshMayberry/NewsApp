@@ -89,7 +89,7 @@ public class NewsViewModel extends AndroidViewModel {
 	private MutableLiveData<String> searchValue = new MutableLiveData<>();
 
 	//Constructors
-	NewsViewModel(@NonNull Application application) {
+	public NewsViewModel(@NonNull Application application) {
 		super(application);
 		context = application;
 
@@ -97,7 +97,7 @@ public class NewsViewModel extends AndroidViewModel {
 	}
 
 	//News Methods
-	LiveData<List<NewsContainer>> getContainerList() {
+	public LiveData<List<NewsContainer>> getContainerList() {
 		return containerList;
 	}
 
@@ -113,22 +113,22 @@ public class NewsViewModel extends AndroidViewModel {
 		return progress;
 	}
 
-	NewsViewModel setBusy(Integer value) {
+	public NewsViewModel setBusy(Integer value) {
 		this.busy.setValue(value);
 		return this;
 	}
 
-	NewsViewModel setRety(Integer value) {
+	public NewsViewModel setRety(Integer value) {
 		this.retry.setValue(value);
 		return this;
 	}
 
-	NewsViewModel setProgress(int number) {
+	public NewsViewModel setProgress(int number) {
 		this.progress.setValue(String.valueOf(number));
 		return this;
 	}
 
-	NewsViewModel setProgress(String text) {
+	public NewsViewModel setProgress(String text) {
 		this.progress.setValue(text);
 		return this;
 	}
@@ -146,17 +146,17 @@ public class NewsViewModel extends AndroidViewModel {
 		return errorSubText;
 	}
 
-	NewsViewModel setErrorTitle(int resourceId) {
+	public NewsViewModel setErrorTitle(int resourceId) {
 		this.errorTitle.setValue(context.getString(resourceId));
 		return this;
 	}
 
-	NewsViewModel setErrorTitle(String text) {
+	public NewsViewModel setErrorTitle(String text) {
 		this.errorTitle.setValue(text);
 		return this;
 	}
 
-	NewsViewModel setErrorImage(Integer resourceId) {
+	public NewsViewModel setErrorImage(Integer resourceId) {
 		if (resourceId == null) {
 			this.errorImage.setValue(null);
 			return this;
@@ -165,12 +165,12 @@ public class NewsViewModel extends AndroidViewModel {
 		return this;
 	}
 
-	NewsViewModel setErrorSubText(int resourceId) {
+	public NewsViewModel setErrorSubText(int resourceId) {
 		this.errorSubText.setValue(context.getString(resourceId));
 		return this;
 	}
 
-	NewsViewModel setErrorSubText(String text) {
+	public NewsViewModel setErrorSubText(String text) {
 		this.errorSubText.setValue(text);
 		return this;
 	}
@@ -221,12 +221,12 @@ public class NewsViewModel extends AndroidViewModel {
 		return searchValue;
 	}
 
-	NewsViewModel setSearchValue(int resourceId) {
+	public NewsViewModel setSearchValue(int resourceId) {
 		this.searchValue.setValue(context.getString(resourceId));
 		return this;
 	}
 
-	NewsViewModel setSearchValue(String text) {
+	public NewsViewModel setSearchValue(String text) {
 		this.searchValue.setValue(text);
 		return this;
 	}
@@ -297,7 +297,7 @@ public class NewsViewModel extends AndroidViewModel {
 	}
 
 	//Data Methods
-	boolean loadData() {
+	public boolean loadData() {
 		if (!checkOnline()) {
 			return false;
 		}
@@ -309,7 +309,7 @@ public class NewsViewModel extends AndroidViewModel {
 		return true;
 	}
 
-	boolean resetData() {
+	public boolean resetData() {
 		if (!checkOnline()) {
 			return false;
 		}

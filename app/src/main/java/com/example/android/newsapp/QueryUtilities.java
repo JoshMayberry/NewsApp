@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
  * A utility class that is used to get information from the internet.
  * Use: https://gist.github.com/udacityandroid/10892631f57f9f073ab9e1d11cfaafcf
  */
-class QueryUtilities {
+public class QueryUtilities {
     private static final String LOG_TAG = QueryUtilities.class.getSimpleName();
 
     private QueryUtilities() {
@@ -29,7 +29,7 @@ class QueryUtilities {
     /**
      * Formats a string as a URL object.
      */
-    static URL createUrl(String stringUrl) {
+	public static URL createUrl(String stringUrl) {
         try {
             return new URL(stringUrl);
         } catch (MalformedURLException error) {
@@ -41,7 +41,7 @@ class QueryUtilities {
     /**
      * Formats a string as a URI object.
      */
-    static Uri createUri(String stringUri) {
+	public static Uri createUri(String stringUri) {
         if (stringUri.isEmpty()) {
             return null;
         }
@@ -51,7 +51,7 @@ class QueryUtilities {
     /**
      * Makes an HTTP request to the given URL and return a String as the response.
      */
-    static String makeHttpRequest(String requestUrl) throws IOException {
+	public static String makeHttpRequest(String requestUrl) throws IOException {
         if (TextUtils.isEmpty(requestUrl)) {
             return "";
         }
@@ -93,7 +93,7 @@ class QueryUtilities {
      * Convert the {@link InputStream} into a String which contains the
      * whole JSON response from the server.
      */
-    static String readFromStream(InputStream inputStream) throws IOException {
+	public static String readFromStream(InputStream inputStream) throws IOException {
         if (inputStream == null) {
             return "";
         }
@@ -112,7 +112,7 @@ class QueryUtilities {
 	 * See: https://developer.android.com/training/basics/network-ops/connecting.html
 	 * Use: https://developer.android.com/training/monitoring-device-state/connectivity-monitoring.html#DetermineConnection
 	 */
-	static boolean checkOnline(Context context) {
+	public static boolean checkOnline(Context context) {
 		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		return networkInfo != null && networkInfo.isConnected();

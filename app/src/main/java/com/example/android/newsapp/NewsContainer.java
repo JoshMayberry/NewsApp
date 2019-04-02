@@ -61,7 +61,7 @@ public class NewsContainer extends BaseObservable {
 				'}';
 	}
 
-	NewsContainer(Context context) {
+	public NewsContainer(Context context) {
 		this.context = context;
 	}
 
@@ -104,27 +104,27 @@ public class NewsContainer extends BaseObservable {
 		return urlImage;
 	}
 
-	Uri getPage() {
+	public Uri getPage() {
 		return QueryUtilities.createUri(urlPage);
 	}
 
 	//Setters
-	NewsContainer setAuthor(String text) {
+	public NewsContainer setAuthor(String text) {
 		this.author = text;
 		return this;
 	}
 
-	NewsContainer setSection(String text) {
+	public NewsContainer setSection(String text) {
 		this.section = text;
 		return this;
 	}
 
-	NewsContainer setTitle(String text) {
+	public NewsContainer setTitle(String text) {
 		this.title = text;
 		return this;
 	}
 
-	NewsContainer setSubText(String text) {
+	public NewsContainer setSubText(String text) {
 		this.subText = text;
 		return this;
 	}
@@ -135,7 +135,7 @@ public class NewsContainer extends BaseObservable {
 	 * See: https://stackoverflow.com/questions/10286204/the-right-json-date-format/15952652#15952652
 	 * Use: https://stackoverflow.com/questions/8573250/android-how-can-i-convert-string-to-date/8573343#8573343
 	 */
-	NewsContainer setDate(String dateRaw) {
+	public NewsContainer setDate(String dateRaw) {
 		try {
 			this.date = dateImportFormat.parse(dateRaw);
 		} catch (ParseException error) {
@@ -145,12 +145,12 @@ public class NewsContainer extends BaseObservable {
 		return this;
 	}
 
-	NewsContainer setUrlPage(String text) {
+	public NewsContainer setUrlPage(String text) {
 		this.urlPage = text;
 		return this;
 	}
 
-	NewsContainer setUrlImage(String text) {
+	public NewsContainer setUrlImage(String text) {
 		this.urlImage = text;
 		return this;
 	}
